@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GamesHub — Mini JS Games (Enhanced)</title>
+  <meta name="description" content="TicTacToe, Snake, Memory, Flappy Bird, Pong, 2048, Minesweeper, Breakout — single-file HTML + JS games portal." />
+  <style>
+    :root{
+      --bg:#071224; --card:#0b1220; --muted:#9aa7b2; --glass: rgba(255,255,255,0.03);
+      --accent:#00d1ff; --accent-2:#7ef;
+      --success:#5eead4; --danger:#ff6b6b; --gold:#ffd166;
+    }
+    /* Theme variants will override vars */
+    body.theme-light{ --bg:#f3f7fb; --card:#ffffff; --muted:#556; --glass: rgba(0,0,0,0.03); --accent:#0066ff; }
+    body.theme-neon{ --bg:#02030a; --card:#021226; --muted:#7ef; --glass: rgba(255,255,255,0.03); --accent:#ff2d95; }
+    body.theme-retro{ --bg:#0b0a03; --card:#111013; --muted:#c7b299; --glass: rgba(255,255,255,0.02); --accent:#ffd166; }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:var(--muted);background:var(--bg)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03)}
+    h1{font-size:18px;margin:0;color:var(--accent);letter-spacing:0.6px}
+    nav{display:flex;gap:8px}
+    button.tab{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+    button.tab.active{color:white;border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,0.6);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
+    main{padding:18px;display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+    .sidebar{background:var(--card);padding:16px;border-radius:12px;min-height:320px;color:var(--muted);box-shadow:0 8px 28px rgba(0,0,0,0.45)}
+    .game-card{background:var(--glass);padding:12px;border-radius:10px;margin-bottom:12px;color:inherit}
+    .game-card h3{margin:0 0 6px 0;color:var(--accent)}
+    .play-btn{display:inline-block;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:white;text-decoration:none;cursor:pointer}
+    .workspace{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));padding:18px;border-radius:12px;min-height:560px;position:relative;color:var(--muted)}
+    .game-area{display:none;height:100%}
+    .game-area.active{display:block}
+    .actions{display:flex;gap:10px;margin-bottom:12px}
+
+    /* TicTacToe */
+    .ttt{display:flex;flex-direction:column;gap:12px;align-items:center}
+    .board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:360px;max-width:100%}
+    .cell{height:110px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-size:48px;color:var(--accent);cursor:pointer}
+    .status{color:var(--muted)}
+
+    /* Canvas */
+    canvas{background:linear-gradient(180deg,#04121a,#07202b);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.6)}
+
+    /* Memory */
+    .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+    .card{height:80px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-size:28px;color:transparent;cursor:pointer}
+    .card.revealed{color:var(--card);background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+
+    /* About panel with 8 columns */
+    .about-panel{position:fixed;right:18px;top:64px;width:520px;max-width:calc(100% - 36px);background:var(--card);border-radius:12px;padding:14px;box-shadow:0 20px 60px rgba(0,0,0,0.6);display:none;z-index:60}
+    .about-panel.show{display:block}
+    .about-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .about-item{background:var(--glass);padding:10px;border-radius:8px;font-size:13px;color:var(--muted)}
+    .about-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+
+    footer{padding:14px 22px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* Responsive */
+    @media (max-width:1000px){main{grid-template-columns:1fr;} .about-panel{position:static;margin-top:12px;width:auto}}
+  </style>
+</head>
+<body class="">
+  <header>
+    <h1>GamesHub — Enhanced</h1>
+    <nav>
+      <button class="tab active" data-game="ttt">Tic Tac Toe</button>
+      <button class="tab" data-game="snake">Snake</button>
+      <button class="tab" data-game="memory">Memory</button>
+      <button class="tab" data-game="flappy">Flappy</button>
+      <button class="tab" data-game="pong">Pong</button>
+      <button class="tab" data-game="2048">2048</button>
+      <button class="tab" data-game="mines">Minesweeper</button>
+      <button class="tab" data-game="breakout">Breakout</button>
+    </nav>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="aboutBtn" class="play-btn" title="About & Settings">About</button>
+    </div>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <div class="game-card">
+        <h3>Pick a game</h3>
+        <p style="margin:6px 0;color:var(--muted)">Fast to load — play instantly. Use keyboard or touch.</p>
+      </div>
+      <div class="game-card"><h4>Tic Tac Toe</h4><p>2-player local / AI</p><button class="play-btn" data-game="ttt">Play</button></div>
+      <div class="game-card"><h4>Snake</h4><p>Arrow keys</p><button class="play-btn" data-game="snake">Play</button></div>
+      <div class="game-card"><h4>Memory</h4><p>Match pairs</p><button class="play-btn" data-game="memory">Play</button></div>
+      <div class="game-card"><h4>Flappy</h4><p>Space / Tap</p><button class="play-btn" data-game="flappy">Play</button></div>
+      <div class="game-card"><h4>Pong</h4><p>Two-player or vs AI (W/S & Up/Down)</p><button class="play-btn" data-game="pong">Play</button></div>
+      <div class="game-card"><h4>2048</h4><p>Slide tiles</p><button class="play-btn" data-game="2048">Play</button></div>
+      <div class="game-card"><h4>Minesweeper</h4><p>Clear the field</p><button class="play-btn" data-game="mines">Play</button></div>
+      <div class="game-card"><h4>Breakout</h4><p>Classic paddle & bricks</p><button class="play-btn" data-game="breakout">Play</button></div>
+    </aside>
+
+    <section class="workspace">
+      <div class="actions">
+        <button id="restart" class="play-btn">Restart current</button>
+        <div style="flex:1"></div>
+        <div style="color:var(--muted)">Tip: Use keyboard for controls. Theme in About.</div>
+      </div>
+
+      <!-- TIC TAC TOE -->
+      <div id="ttt" class="game-area active">
+        <div class="ttt">
+          <div class="board" id="ttt-board"></div>
+          <div class="status" id="ttt-status">Player X's turn</div>
+        </div>
+      </div>
+
+      <!-- SNAKE -->
+      <div id="snake" class="game-area">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <canvas id="snake-canvas" width="420" height="420"></canvas>
+          <div style="color:var(--muted)"><div>Score: <span id="snake-score">0</span></div><div style="height:10px"></div><button id="snake-start" class="play-btn">Start / Restart</button></div>
+        </div>
+      </div>
+
+      <!-- MEMORY -->
+      <div id="memory" class="game-area">
+        <div>
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+            <button id="memory-reset" class="play-btn">Shuffle / Reset</button>
+            <div>Tries: <span id="memory-tries">0</span></div>
+            <div style="flex:1"></div>
+            <div>Matches: <span id="memory-matches">0</span></div>
+          </div>
+          <div class="grid" id="memory-grid"></div>
+        </div>
+      </div>
+
+      <!-- FLAPPY -->
+      <div id="flappy" class="game-area">
+        <div style="display:flex;gap:12px">
+          <canvas id="flappy-canvas" width="480" height="360"></canvas>
+          <div style="padding-left:12px;color:var(--muted)"><h3 style="margin-top:0">Flappy Bird</h3><p>Controls: Space / Click / Tap</p><p>Score: <span id="flappy-score">0</span></p><p><button id="flappy-start" class="play-btn">Start / Restart</button></p></div>
+        </div>
+      </div>
+
+      <!-- PONG -->
+      <div id="pong" class="game-area">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <canvas id="pong-canvas" width="600" height="360"></canvas>
+          <div style="padding-left:12px;color:var(--muted)"><h3 style="margin-top:0">Pong</h3><p>Left: W/S, Right: ↑/↓</p><p>Mode: <select id="pong-mode"><option>2 Player</option><option>Vs AI</option></select></p><p>Score: <span id="pong-score">0 - 0</span></p><p><button id="pong-start" class="play-btn">Start / Restart</button></p></div>
+        </div>
+      </div>
+
+      <!-- 2048 -->
+      <div id="2048" class="game-area">
+        <div style="display:flex;gap:18px;align-items:flex-start">
+          <div id="game-2048" style="width:420px;max-width:100%"></div>
+          <div style="color:var(--muted)"><h3>2048</h3><p>Arrow keys to slide tiles</p><p>Score: <span id="g2048-score">0</span></p><p><button id="g2048-restart" class="play-btn">Restart</button></p></div>
+        </div>
+      </div>
+
+      <!-- MINESWEEPER -->
+      <div id="mines" class="game-area">
+        <div style="display:flex;gap:18px">
+          <div id="mines-grid"></div>
+          <div style="color:var(--muted)"><h3>Minesweeper</h3><p>Left click reveal, right click flag</p><p>Mine count: <span id="mines-count">10</span></p><p><button id="mines-reset" class="play-btn">Reset</button></p></div>
+        </div>
+      </div>
+
+      <!-- BREAKOUT -->
+      <div id="breakout" class="game-area">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <canvas id="breakout-canvas" width="640" height="360"></canvas>
+          <div style="padding-left:12px;color:var(--muted)"><h3>Breakout</h3><p>Arrow keys or mouse to move paddle</p><p>Score: <span id="break-score">0</span></p><p><button id="break-start" class="play-btn">Start / Restart</button></p></div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <div class="about-panel" id="aboutPanel">
+    <div class="about-top"><strong style="color:var(--accent)">About & Settings</strong><button id="closeAbout" class="play-btn">Close</button></div>
+    <div class="about-grid">
+      <div class="about-item"><strong>Developer</strong><div>Sankar Seshapu</div></div>
+      <div class="about-item"><strong>Contact</strong><div>Phone: 6300348255</div><div>Email: sankarseshapu02@gmail.com</div></div>
+      <div class="about-item"><strong>Themes</strong><div><button class="theme-btn" data-theme="">Default</button> <button class="theme-btn" data-theme="theme-light">Light</button> <button class="theme-btn" data-theme="theme-neon">Neon</button> <button class="theme-btn" data-theme="theme-retro">Retro</button></div></div>
+      <div class="about-item"><strong>Settings</strong><div><label>Sound: <input type="checkbox" id="setting-sound" checked></label></div><div><label>Show Hints: <input type="checkbox" id="setting-hints" checked></label></div></div>
+      <div class="about-item"><strong>Timer</strong><div>Set game timer (seconds): <input id="game-timer" type="number" min="10" value="60" style="width:80px"></div></div>
+      <div class="about-item"><strong>Games</strong><div>Available: TicTacToe, Snake, Memory, Flappy, Pong, 2048, Minesweeper, Breakout</div></div>
+      <div class="about-item"><strong>Shortcuts</strong><div>Space: Flap/Start | Arrows: Move | W/S: Paddle</div></div>
+      <div class="about-item"><strong>Credits</strong><div>UI by GamesHub • Built in single HTML file</div></div>
+    </div>
+  </div>
+
+  <footer>Made with ♥ — Save as <code>gameshub-enhanced.html</code> and open in your browser.</footer>
+
+  <script>
+  // Basic wiring
+  const tabs = document.querySelectorAll('button.tab');
+  const playBtns = document.querySelectorAll('.play-btn[data-game]');
+  const gameAreas = document.querySelectorAll('.game-area');
+  let current = 'ttt';
+  function showGame(id){
+    current = id;
+    gameAreas.forEach(a=> a.id===id? a.classList.add('active') : a.classList.remove('active'));
+    tabs.forEach(t=> t.dataset.game===id? t.classList.add('active'): t.classList.remove('active'));
+  }
+  tabs.forEach(t=>t.addEventListener('click', ()=> showGame(t.dataset.game)));
+  playBtns.forEach(p=> p.dataset.game && p.addEventListener('click', ()=> showGame(p.dataset.game)));
+  document.getElementById('restart').addEventListener('click', ()=>{
+    if(current==='ttt') tttReset();
+    if(current==='snake') startSnake();
+    if(current==='memory') memoryReset();
+    if(current==='flappy') flappyReset();
+    if(current==='pong') pongReset();
+    if(current==='2048') g2048Reset();
+    if(current==='mines') minesReset();
+    if(current==='breakout') breakoutReset();
+  });
+
+  // ABOUT panel
+  const aboutBtn = document.getElementById('aboutBtn'); const aboutPanel = document.getElementById('aboutPanel');
+  aboutBtn.addEventListener('click', ()=> aboutPanel.classList.toggle('show'));
+  document.getElementById('closeAbout').addEventListener('click', ()=> aboutPanel.classList.remove('show'));
+  document.querySelectorAll('.theme-btn').forEach(b=> b.addEventListener('click', ()=>{ document.body.className = b.dataset.theme; }));
+
+  /* ======================= TIC TAC TOE (unchanged) ======================= */
+  const tttBoardEl = document.getElementById('ttt-board');
+  const tttStatus = document.getElementById('ttt-status');
+  let tttBoard = Array(9).fill(null); let tttTurn = 'X'; let tttOver=false;
+  function tttRender(){ tttBoardEl.innerHTML=''; tttBoard.forEach((v,i)=>{ const c=document.createElement('div'); c.className='cell'; c.dataset.i=i; c.textContent=v||''; c.addEventListener('click', ()=>{ if(tttOver || tttBoard[i]) return; tttBoard[i]=tttTurn; tttTurn = tttTurn==='X'? 'O':'X'; tttRender(); checkTtt(); }); tttBoardEl.appendChild(c); }); tttStatus.textContent = tttOver? 'Game over' : `Player ${tttTurn}'s turn`; }
+  function checkTtt(){ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(const w of wins){ const [a,b,c]=w; if(tttBoard[a] && tttBoard[a]===tttBoard[b] && tttBoard[a]===tttBoard[c]){ tttOver=true; tttStatus.textContent = `Player ${tttBoard[a]} wins!`; return; } } if(tttBoard.every(Boolean)){ tttOver=true; tttStatus.textContent='Draw.' } }
+  function tttReset(){ tttBoard=Array(9).fill(null); tttTurn='X'; tttOver=false; tttRender(); }
+  tttReset();
+
+  /* ======================= SNAKE (improved visuals) ======================= */
+  const snakeCanvas = document.getElementById('snake-canvas'); const sctx = snakeCanvas.getContext('2d'); const snakeScoreEl = document.getElementById('snake-score');
+  let snakeInterval=null; let snakeState = {dir:{x:1,y:0}, snake:[{x:6,y:6}], food:{x:12,y:12}, grid:21, score:0, running:false, speed:110};
+  function drawSnake(){ const G = snakeState.grid; const size = snakeCanvas.width / G; sctx.clearRect(0,0,snakeCanvas.width,snakeCanvas.height);
+    // draw background
+    const grad = sctx.createLinearGradient(0,0,snakeCanvas.width,snakeCanvas.height); grad.addColorStop(0,'#021a1f'); grad.addColorStop(1,'#032732'); sctx.fillStyle = grad; sctx.fillRect(0,0,snakeCanvas.width,snakeCanvas.height);
+    // draw food
+    sctx.fillStyle = 'rgba(255,130,130,0.95)'; sctx.fillRect(snakeState.food.x*size+2, snakeState.food.y*size+2, size-4, size-4);
+    // snake
+    sctx.fillStyle = 'rgba(120,230,255,0.95)'; snakeState.snake.forEach((s,i)=> sctx.fillRect(s.x*size+1, s.y*size+1, size-2, size-2));
+  }
+  function stepSnake(){ const head = {...snakeState.snake[0]}; head.x += snakeState.dir.x; head.y += snakeState.dir.y; const G = snakeState.grid; head.x = (head.x + G) % G; head.y = (head.y + G) % G; if(snakeState.snake.some(p=>p.x===head.x && p.y===head.y)) { stopSnake(); return; } snakeState.snake.unshift(head); if(head.x===snakeState.food.x && head.y===snakeState.food.y){ snakeState.score+=1; snakeScoreEl.textContent=snakeState.score; placeFood(); } else snakeState.snake.pop(); drawSnake(); }
+  function placeFood(){ const G=snakeState.grid; let valid=false; while(!valid){ const x=Math.floor(Math.random()*G), y=Math.floor(Math.random()*G); if(!snakeState.snake.some(p=>p.x===x && p.y===y)){ snakeState.food={x,y}; valid=true; } } }
+  function startSnake(){ stopSnake(); snakeState = {dir:{x:1,y:0}, snake:[{x:6,y:6}], food:{x:12,y:12}, grid:21, score:0, running:true, speed:110}; placeFood(); snakeScoreEl.textContent=0; drawSnake(); snakeInterval=setInterval(stepSnake, snakeState.speed); }
+  function stopSnake(){ if(snakeInterval) clearInterval(snakeInterval); snakeInterval=null; snakeState.running=false; }
+  document.getElementById('snake-start').addEventListener('click', startSnake);
+  window.addEventListener('keydown',(e)=>{ if(current!=='snake') return; if(e.key.includes('Arrow')){ e.preventDefault(); const dir = e.key.replace('Arrow','').toLowerCase(); if(dir==='up' && snakeState.dir.y!==1) snakeState.dir={x:0,y:-1}; if(dir==='down' && snakeState.dir.y!==-1) snakeState.dir={x:0,y:1}; if(dir==='left' && snakeState.dir.x!==1) snakeState.dir={x:-1,y:0}; if(dir==='right' && snakeState.dir.x!==-1) snakeState.dir={x:1,y:0}; } });
+
+  /* ======================= MEMORY (unchanged) ======================= */
+  const memoryGrid = document.getElementById('memory-grid'); const memoryTriesEl = document.getElementById('memory-tries'); const memoryMatchesEl = document.getElementById('memory-matches');
+  let memoryState = {cards:[], revealed:[], matches:0, tries:0, lock:false};
+  function memoryReset(){ const symbols = '🍎🍌🍇🍓🍊🍑🍍🥝⭐️❄️🔥💎🍉🍋🍐🍒'.split(''); const pairs = symbols.slice(0,12); const deck = [...pairs,...pairs]; for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]] } memoryState.cards = deck; memoryState.revealed = Array(deck.length).fill(false); memoryState.matches=0; memoryState.tries=0; memoryState.lock=false; renderMemory(); memoryTriesEl.textContent=0; memoryMatchesEl.textContent=0; }
+  function renderMemory(){ memoryGrid.innerHTML=''; memoryState.cards.forEach((s,i)=>{ const c = document.createElement('div'); c.className='card'; if(memoryState.revealed[i]) c.classList.add('revealed'); c.textContent = s; c.addEventListener('click', ()=> onCard(i)); memoryGrid.appendChild(c); }); }
+  function onCard(i){ if(memoryState.lock || memoryState.revealed[i]) return; memoryState.revealed[i]=true; renderMemory(); const open = memoryState.revealed.map((v,idx)=> v? {sym:memoryState.cards[idx], idx} : null).filter(Boolean); if(open.length%2===0){ memoryState.lock=true; memoryState.tries++; memoryTriesEl.textContent=memoryState.tries; const a=open[open.length-2], b=open[open.length-1]; if(a.sym===b.sym){ memoryState.matches++; memoryMatchesEl.textContent=memoryState.matches; memoryState.lock=false; if(memoryState.matches===Math.floor(memoryState.cards.length/2)){ /* win */ } } else { setTimeout(()=>{ memoryState.revealed[a.idx]=false; memoryState.revealed[b.idx]=false; memoryState.lock=false; renderMemory(); },700) } } }
+  document.getElementById('memory-reset').addEventListener('click', memoryReset);
+  memoryReset();
+
+  /* ======================= FLAPPY (unchanged) ======================= */
+  const flappyCanvas = document.getElementById('flappy-canvas'); const fctx = flappyCanvas.getContext('2d'); let flappyState = {bird:{x:80,y:160,vy:0}, pipes:[], gravity:0.6, lift:-10, running:false, score:0, tick:0};
+  function drawFlappy(){ fctx.clearRect(0,0,flappyCanvas.width,flappyCanvas.height); const sky = fctx.createLinearGradient(0,0,0,flappyCanvas.height); sky.addColorStop(0,'#84d5ff'); sky.addColorStop(1,'#bdefff'); fctx.fillStyle = sky; fctx.fillRect(0,0,flappyCanvas.width,flappyCanvas.height); fctx.fillStyle='#0a4'; flappyState.pipes.forEach(p=>{ fctx.fillRect(p.x,0,p.w,p.top); fctx.fillRect(p.x,p.bottom,p.w,flappyCanvas.height-p.bottom); }); fctx.fillStyle='#ffdd55'; fctx.beginPath(); fctx.arc(flappyState.bird.x, flappyState.bird.y, 12, 0, Math.PI*2); fctx.fill(); }
+  function stepFlappy(){ if(!flappyState.running) return; flappyState.tick++; if(flappyState.tick%90===0){ const gap=100; const top = 40 + Math.random() * (flappyCanvas.height - gap - 80); flappyState.pipes.push({x:flappyCanvas.width, w:48, top:top, bottom:top+gap}); } flappyState.pipes.forEach(p=> p.x -= 2); flappyState.pipes = flappyState.pipes.filter(p=> p.x + p.w > 0); flappyState.bird.vy += flappyState.gravity; flappyState.bird.y += flappyState.bird.vy; flappyState.pipes.forEach(p=>{ if(!p.passed && p.x + p.w < flappyState.bird.x){ p.passed=true; flappyState.score++; document.getElementById('flappy-score').textContent = flappyState.score } const bx = flappyState.bird.x, by = flappyState.bird.y; if(bx+12 > p.x && bx-12 < p.x + p.w){ if(by-12 < p.top || by+12 > p.bottom) stopFlappy(); } }); if(flappyState.bird.y > flappyCanvas.height || flappyState.bird.y < 0) stopFlappy(); drawFlappy(); }
+  let flappyInt=null; function startFlappy(){ stopFlappy(); flappyState = {bird:{x:80,y:160,vy:0}, pipes:[], gravity:0.6, lift:-10, running:true, score:0, tick:0}; document.getElementById('flappy-score').textContent=0; flappyInt = setInterval(stepFlappy, 20); } function stopFlappy(){ if(flappyInt) clearInterval(flappyInt); flappyInt=null; flappyState.running=false; } function flap(){ if(!flappyState.running) startFlappy(); flappyState.bird.vy = flappyState.lift; }
+  document.getElementById('flappy-start').addEventListener('click', startFlappy); flappyCanvas.addEventListener('click', flap);
+
+  /* ======================= PONG (simple) ======================= */
+  const pongCanvas = document.getElementById('pong-canvas'); const pctx = pongCanvas.getContext('2d'); const pongScoreEl = document.getElementById('pong-score'); let pongInt=null; let pongState = {p1Y:150,p2Y:150,ball:{x:300,y:180,vx:4,vy:2},score:[0,0],mode:'2 Player',running:false};
+  function drawPong(){ pctx.clearRect(0,0,pongCanvas.width,pongCanvas.height); pctx.fillStyle='#001'; pctx.fillRect(0,0,pongCanvas.width,pongCanvas.height); pctx.fillStyle='#fff'; pctx.fillRect(10,pongState.p1Y,10,80); pctx.fillRect(pongCanvas.width-20,pongState.p2Y,10,80); pctx.beginPath(); pctx.arc(pongState.ball.x,pongState.ball.y,8,0,Math.PI*2); pctx.fill(); }
+  function stepPong(){ if(!pongState.running) return; pongState.ball.x += pongState.ball.vx; pongState.ball.y += pongState.ball.vy; if(pongState.ball.y<0 || pongState.ball.y>pongCanvas.height) pongState.ball.vy *= -1; // paddle collisions
+    if(pongState.ball.x < 30 && pongState.ball.y > pongState.p1Y && pongState.ball.y < pongState.p1Y + 80){ pongState.ball.vx *= -1; }
+    if(pongState.ball.x > pongCanvas.width - 30 && pongState.ball.y > pongState.p2Y && pongState.ball.y < pongState.p2Y + 80){ pongState.ball.vx *= -1; }
+    if(pongState.ball.x < 0){ pongState.score[1]++; resetBall(); }
+    if(pongState.ball.x > pongCanvas.width){ pongState.score[0]++; resetBall(); }
+    if(pongState.mode==='Vs AI'){ // simple AI for right paddle
+      const target = pongState.ball.y - 40; pongState.p2Y += (target - pongState.p2Y) * 0.12;
+    }
+    pongScoreEl.textContent = `${pongState.score[0]} - ${pongState.score[1]}`;
+    drawPong(); }
+  function resetBall(){ pongState.ball = {x:300,y:180,vx: (Math.random()>0.5?4:-4), vy: (Math.random()*4)-2}; }
+  function pongStart(){ pongReset(); pongState.running=true; if(!pongInt) pongInt = setInterval(stepPong,16); }
+  function pongReset(){ pongState = {p1Y:150,p2Y:150,ball:{x:300,y:180,vx:4,vy:2},score:[0,0],mode: document.getElementById('pong-mode').value, running:false}; resetBall(); drawPong(); }
+  document.getElementById('pong-start').addEventListener('click', pongStart); document.getElementById('pong-mode').addEventListener('change', e=> pongState.mode = e.target.value );
+  window.addEventListener('keydown', (e)=>{ if(current==='pong'){ if(e.key==='w') pongState.p1Y -= 18; if(e.key==='s') pongState.p1Y += 18; if(e.key==='ArrowUp') pongState.p2Y -= 18; if(e.key==='ArrowDown') pongState.p2Y += 18; } });
+
+  /* ======================= 2048 (minimal) ======================= */
+  const g2048Root = document.getElementById('game-2048'); const g2048Score = document.getElementById('g2048-score'); let g2048=null;
+  function g2048Create(){ g2048Root.innerHTML=''; const wrap = document.createElement('div'); wrap.style.width='420px'; wrap.style.maxWidth='100%'; wrap.style.padding='12px'; wrap.style.background='linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))'; wrap.style.borderRadius='10px'; const board = document.createElement('div'); board.style.display='grid'; board.style.gridTemplateColumns='repeat(4,1fr)'; board.style.gap='8px'; board.style.padding='8px'; board.style.background='transparent'; board.style.borderRadius='8px'; wrap.appendChild(board); g2048Root.appendChild(wrap);
+    function newGame(){ g2048 = {grid:[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]], score:0}; addTile(); addTile(); render(); }
+    function addTile(){ const empties=[]; for(let r=0;r<4;r++) for(let c=0;c<4;c++) if(g2048.grid[r][c]===0) empties.push([r,c]); if(empties.length===0) return; const pick = empties[Math.floor(Math.random()*empties.length)]; g2048.grid[pick[0]][pick[1]] = Math.random()>0.85?4:2; }
+    function render(){ board.innerHTML=''; for(let r=0;r<4;r++) for(let c=0;c<4;c++){ const v = g2048.grid[r][c]; const cell = document.createElement('div'); cell.style.height='80px'; cell.style.borderRadius='8px'; cell.style.display='flex'; cell.style.alignItems='center'; cell.style.justifyContent='center'; cell.style.fontSize='28px'; cell.style.background = v? 'linear-gradient(90deg,#ffd166,#ff9f1c)' : 'rgba(255,255,255,0.02)'; cell.textContent = v? v:''; board.appendChild(cell); } g2048Score.textContent = g2048.score; }
+    function move(dir){ let moved=false; const rotate = (m)=> { // rotate grid right m times
+        for(let t=0;t<m;t++){ const ng = Array.from({length:4},()=>Array(4).fill(0)); for(let r=0;r<4;r++) for(let c=0;c<4;c++) ng[c][3-r]=g2048.grid[r][c]; g2048.grid = ng; }
+      };
+      const compact = ()=>{
+        for(let r=0;r<4;r++){ const row = g2048.grid[r].filter(v=>v); for(let i=0;i<4;i++) row[i]=row[i]||0; g2048.grid[r]=row; }
+      };
+      // map dir to rotations
+      const map = { 'left':0,'up':1,'right':2,'down':3 };
+      rotate(map[dir]); for(let r=0;r<4;r++){ for(let c=0;c<3;c++){ if(g2048.grid[r][c]===0) continue; for(let k=c+1;k<4;k++){ if(g2048.grid[r][k]===0) continue; if(g2048.grid[r][c]===g2048.grid[r][k]){ g2048.grid[r][c]*=2; g2048.score += g2048.grid[r][c]; g2048.grid[r][k]=0; moved=true; } break; } } }
+      compact(); rotate((4-map[dir])%4); if(moved) addTile(); render(); }
+    document.addEventListener('keydown',(e)=>{ if(current!=='2048') return; if(e.key.includes('Arrow')){ e.preventDefault(); const d = e.key.replace('Arrow','').toLowerCase(); move(d); } });
+    document.getElementById('g2048-restart').addEventListener('click', newGame);
+    newGame();
+  }
+  g2048Create();
+  function g2048Reset(){ g2048Create(); }
+
+  /* ======================= MINESWEEPER (simple) ======================= */
+  const minesGrid = document.getElementById('mines-grid'); const minesCount = document.getElementById('mines-count');
+  let minesState=null;
+  function minesReset(){ const rows=9, cols=9, mines=10; minesCount.textContent = mines; minesState = {rows,cols,mines,grid:[],flags:0}; // generate
+    const arr = Array(rows).fill(0).map(()=>Array(cols).fill(0)); let placed=0; while(placed<mines){ const r=Math.floor(Math.random()*rows), c=Math.floor(Math.random()*cols); if(arr[r][c]===-1) continue; arr[r][c]=-1; placed++; }
+    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){ if(arr[r][c]===-1) continue; let cnt=0; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=r+dr, nc=c+dc; if(nr>=0 && nr<rows && nc>=0 && nc<cols && arr[nr][nc]===-1) cnt++; } arr[r][c]=cnt; }
+    minesState.grid = arr; renderMines(); }
+  function renderMines(){ minesGrid.innerHTML=''; minesGrid.style.display='grid'; minesGrid.style.gridTemplateColumns = `repeat(${minesState.cols},36px)`; minesGrid.style.gap='6px'; for(let r=0;r<minesState.rows;r++) for(let c=0;c<minesState.cols;c++){ const btn = document.createElement('button'); btn.style.width='36px'; btn.style.height='36px'; btn.style.borderRadius='6px'; btn.style.background='linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))'; btn.style.border='none'; btn.dataset.r=r; btn.dataset.c=c; btn.addEventListener('click', ()=> revealCell(r,c,btn)); btn.addEventListener('contextmenu', (ev)=>{ ev.preventDefault(); if(btn.textContent==='🚩') { btn.textContent=''; minesState.flags--; } else { btn.textContent='🚩'; minesState.flags++; } minesCount.textContent = minesState.mines - minesState.flags; }); minesGrid.appendChild(btn); } }
+  function revealCell(r,c,btn){ const val = minesState.grid[r][c]; if(val===-1){ btn.textContent='💥'; alert('Boom! You hit a mine.'); minesReset(); return; } btn.textContent = val? val : ''; btn.disabled=true; if(val===0){ for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=r+dr, nc=c+dc; if(nr>=0 && nr<minesState.rows && nc>=0 && nc<minesState.cols){ const idx = nr*minesState.cols + nc; const btn2 = minesGrid.children[idx]; if(btn2 && !btn2.disabled) revealCell(nr,nc,btn2); } } } }
+  document.getElementById('mines-reset').addEventListener('click', minesReset); minesReset();
+
+  /* ======================= BREAKOUT (basic) ======================= */
+  const breakCanvas = document.getElementById('breakout-canvas'); const bctx = breakCanvas.getContext('2d'); let breakInt=null; let breakState=null;
+  function breakoutReset(){ breakState = {paddleX: (breakCanvas.width-80)/2, ball:{x:breakCanvas.width/2,y:breakCanvas.height-60,vx:4,vy:-4}, bricks:[], rows:5, cols:8, score:0, running:false}; const bw= (breakCanvas.width-40)/breakState.cols; for(let r=0;r<breakState.rows;r++){ for(let c=0;c<breakState.cols;c++){ breakState.bricks.push({x:20 + c*bw + 6, y:30 + r*22, w: bw-6, h:18, alive:true}); } } drawBreakout(); }
+  function drawBreakout(){ bctx.clearRect(0,0,breakCanvas.width,breakCanvas.height); bctx.fillStyle='#022'; bctx.fillRect(0,0,breakCanvas.width,breakCanvas.height); bctx.fillStyle='#fff'; bctx.fillRect(breakState.paddleX, breakCanvas.height-20, 80, 12); bctx.beginPath(); bctx.arc(breakState.ball.x, breakState.ball.y,8,0,Math.PI*2); bctx.fill(); breakState.bricks.forEach(br=>{ if(br.alive){ bctx.fillStyle = '#ff6'; bctx.fillRect(br.x, br.y, br.w, br.h); } }); document.getElementById('break-score').textContent = breakState.score; }
+  function stepBreakout(){ if(!breakState.running) return; breakState.ball.x += breakState.ball.vx; breakState.ball.y += breakState.ball.vy; if(breakState.ball.x < 0 || breakState.ball.x > breakCanvas.width) breakState.ball.vx *= -1; if(breakState.ball.y < 0) breakState.ball.vy *= -1; if(breakState.ball.y > breakCanvas.height){ breakState.running=false; alert('Ball lost!'); } // paddle
+    if(breakState.ball.y + 8 > breakCanvas.height-20 && breakState.ball.x > breakState.paddleX && breakState.ball.x < breakState.paddleX + 80){ breakState.ball.vy *= -1; }
+    // bricks
+    breakState.bricks.forEach(br=>{ if(br.alive && breakState.ball.x > br.x && breakState.ball.x < br.x + br.w && breakState.ball.y > br.y && breakState.ball.y < br.y + br.h){ br.alive=false; breakState.ball.vy *= -1; breakState.score += 10; } }); drawBreakout(); }
+  document.getElementById('break-start').addEventListener('click', ()=>{ breakoutReset(); breakState.running=true; if(!breakInt) breakInt=setInterval(stepBreakout,16); }); breakoutReset();
+  window.addEventListener('mousemove', (e)=>{ const rect = breakCanvas.getBoundingClientRect(); if(current==='breakout') breakState.paddleX = Math.max(0, Math.min(breakCanvas.width-80, e.clientX - rect.left - 40)); });
+
+  // Global keyboard hookups
+  window.addEventListener('keydown', (e)=>{ if(e.code==='Space'){ e.preventDefault(); if(current==='flappy') flap(); if(current==='snake' && !snakeInterval) startSnake(); if(current==='pong' && !pongState.running) pongStart(); if(current==='breakout' && !breakState.running) { breakState.running=true; if(!breakInt) breakInt=setInterval(stepBreakout,16); } } if(e.key.includes('Arrow')){ /* some games listen to arrows already */ } });
+
+  // initial draws
+  drawSnake(); drawFlappy(); drawPong(); g2048Create(); breakoutReset();
+  </script>
+</body>
+</html>
