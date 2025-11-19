@@ -1,336 +1,305 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>GamesHub — Mini JS Games (Enhanced)</title>
-  <meta name="description" content="TicTacToe, Snake, Memory, Flappy Bird, Pong, 2048, Minesweeper, Breakout — single-file HTML + JS games portal." />
-  <style>
-    :root{
-      --bg:#071224; --card:#0b1220; --muted:#9aa7b2; --glass: rgba(255,255,255,0.03);
-      --accent:#00d1ff; --accent-2:#7ef;
-      --success:#5eead4; --danger:#ff6b6b; --gold:#ffd166;
-    }
-    /* Theme variants will override vars */
-    body.theme-light{ --bg:#f3f7fb; --card:#ffffff; --muted:#556; --glass: rgba(0,0,0,0.03); --accent:#0066ff; }
-    body.theme-neon{ --bg:#02030a; --card:#021226; --muted:#7ef; --glass: rgba(255,255,255,0.03); --accent:#ff2d95; }
-    body.theme-retro{ --bg:#0b0a03; --card:#111013; --muted:#c7b299; --glass: rgba(255,255,255,0.02); --accent:#ffd166; }
-
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:var(--muted);background:var(--bg)}
-    header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0));backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03)}
-    h1{font-size:18px;margin:0;color:var(--accent);letter-spacing:0.6px}
-    nav{display:flex;gap:8px}
-    button.tab{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
-    button.tab.active{color:white;border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,0.6);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));}
-    main{padding:18px;display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
-    .sidebar{background:var(--card);padding:16px;border-radius:12px;min-height:320px;color:var(--muted);box-shadow:0 8px 28px rgba(0,0,0,0.45)}
-    .game-card{background:var(--glass);padding:12px;border-radius:10px;margin-bottom:12px;color:inherit}
-    .game-card h3{margin:0 0 6px 0;color:var(--accent)}
-    .play-btn{display:inline-block;padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:white;text-decoration:none;cursor:pointer}
-    .workspace{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));padding:18px;border-radius:12px;min-height:560px;position:relative;color:var(--muted)}
-    .game-area{display:none;height:100%}
-    .game-area.active{display:block}
-    .actions{display:flex;gap:10px;margin-bottom:12px}
-
-    /* TicTacToe */
-    .ttt{display:flex;flex-direction:column;gap:12px;align-items:center}
-    .board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:360px;max-width:100%}
-    .cell{height:110px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-size:48px;color:var(--accent);cursor:pointer}
-    .status{color:var(--muted)}
-
-    /* Canvas */
-    canvas{background:linear-gradient(180deg,#04121a,#07202b);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.6)}
-
-    /* Memory */
-    .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-    .card{height:80px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-size:28px;color:transparent;cursor:pointer}
-    .card.revealed{color:var(--card);background:linear-gradient(90deg,var(--accent),var(--accent-2));}
-
-    /* About panel with 8 columns */
-    .about-panel{position:fixed;right:18px;top:64px;width:520px;max-width:calc(100% - 36px);background:var(--card);border-radius:12px;padding:14px;box-shadow:0 20px 60px rgba(0,0,0,0.6);display:none;z-index:60}
-    .about-panel.show{display:block}
-    .about-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    .about-item{background:var(--glass);padding:10px;border-radius:8px;font-size:13px;color:var(--muted)}
-    .about-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-
-    footer{padding:14px 22px;color:var(--muted);font-size:13px;text-align:center}
-
-    /* Responsive */
-    @media (max-width:1000px){main{grid-template-columns:1fr;} .about-panel{position:static;margin-top:12px;width:auto}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>GamesHub — Mobile Colorful Edition (20+ Games)</title>
+<meta name="description" content="Mobile-first colorful games portal — 20 games (many simplified/playable), vibrant themes and touch controls." />
+<style>
+:root{
+  --bg:#081226; --card:#071428; --muted:#dceffd; --accent:#ffd166; --accent2:#6ee7b7;
+}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto; background:linear-gradient(180deg,#061021,#081428); color:var(--muted); -webkit-font-smoothing:antialiased}
+header{position:sticky;top:0;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:12px;display:flex;align-items:center;justify-content:space-between;z-index:40}
+h1{margin:0;font-size:16px;color:var(--accent)}
+.top-actions{display:flex;gap:8px}
+main{padding:12px;display:flex;flex-direction:column;gap:12px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:12px;box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+.games-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.game-btn{padding:10px;border-radius:10px;text-align:center;font-weight:700;color:#021; background:linear-gradient(180deg,#ffd166,#ff9f1c);font-size:12px}
+.small{font-size:12px;color:var(--muted)}
+.workspace{min-height:520px;border-radius:14px;padding:10px;overflow:hidden}
+.canvas{width:100%;height:auto;border-radius:12px;display:block}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.play-big{flex:1;padding:12px;border-radius:12px;background:linear-gradient(180deg,#6ee7b7,#3ae0b0);color:#021;text-align:center;font-weight:800}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));}
+.modal.show{display:flex}
+.modal-card{background:var(--card);width:100%;max-width:560px;border-radius:12px;padding:14px}
+.theme-row{display:flex;gap:8px;margin-top:8px}
+.badge{display:inline-block;padding:6px 8px;border-radius:8px;font-weight:700;font-size:12px}
+/* colorful buttons for categories */
+.g1{background:linear-gradient(180deg,#ff9f1c,#ffd166)}
+.g2{background:linear-gradient(180deg,#7ef,#6ee7b7)}
+.g3{background:linear-gradient(180deg,#ff6b6b,#ff9f1c)}
+.g4{background:linear-gradient(180deg,#8b5cf6,#60a5fa)}
+/* compact mobile grid */
+@media (max-width:600px){ .games-grid{grid-template-columns:repeat(3,1fr)} .workspace{min-height:420px} }
+@media (min-width:900px){ .games-grid{grid-template-columns:repeat(6,1fr)} }
+</style>
 </head>
-<body class="">
-  <header>
-    <h1>GamesHub — Enhanced</h1>
-    <nav>
-      <button class="tab active" data-game="ttt">Tic Tac Toe</button>
-      <button class="tab" data-game="snake">Snake</button>
-      <button class="tab" data-game="memory">Memory</button>
-      <button class="tab" data-game="flappy">Flappy</button>
-      <button class="tab" data-game="pong">Pong</button>
-      <button class="tab" data-game="2048">2048</button>
-      <button class="tab" data-game="mines">Minesweeper</button>
-      <button class="tab" data-game="breakout">Breakout</button>
-    </nav>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button id="aboutBtn" class="play-btn" title="About & Settings">About</button>
-    </div>
-  </header>
-
-  <main>
-    <aside class="sidebar">
-      <div class="game-card">
-        <h3>Pick a game</h3>
-        <p style="margin:6px 0;color:var(--muted)">Fast to load — play instantly. Use keyboard or touch.</p>
-      </div>
-      <div class="game-card"><h4>Tic Tac Toe</h4><p>2-player local / AI</p><button class="play-btn" data-game="ttt">Play</button></div>
-      <div class="game-card"><h4>Snake</h4><p>Arrow keys</p><button class="play-btn" data-game="snake">Play</button></div>
-      <div class="game-card"><h4>Memory</h4><p>Match pairs</p><button class="play-btn" data-game="memory">Play</button></div>
-      <div class="game-card"><h4>Flappy</h4><p>Space / Tap</p><button class="play-btn" data-game="flappy">Play</button></div>
-      <div class="game-card"><h4>Pong</h4><p>Two-player or vs AI (W/S & Up/Down)</p><button class="play-btn" data-game="pong">Play</button></div>
-      <div class="game-card"><h4>2048</h4><p>Slide tiles</p><button class="play-btn" data-game="2048">Play</button></div>
-      <div class="game-card"><h4>Minesweeper</h4><p>Clear the field</p><button class="play-btn" data-game="mines">Play</button></div>
-      <div class="game-card"><h4>Breakout</h4><p>Classic paddle & bricks</p><button class="play-btn" data-game="breakout">Play</button></div>
-    </aside>
-
-    <section class="workspace">
-      <div class="actions">
-        <button id="restart" class="play-btn">Restart current</button>
-        <div style="flex:1"></div>
-        <div style="color:var(--muted)">Tip: Use keyboard for controls. Theme in About.</div>
-      </div>
-
-      <!-- TIC TAC TOE -->
-      <div id="ttt" class="game-area active">
-        <div class="ttt">
-          <div class="board" id="ttt-board"></div>
-          <div class="status" id="ttt-status">Player X's turn</div>
-        </div>
-      </div>
-
-      <!-- SNAKE -->
-      <div id="snake" class="game-area">
-        <div style="display:flex;gap:14px;align-items:flex-start">
-          <canvas id="snake-canvas" width="420" height="420"></canvas>
-          <div style="color:var(--muted)"><div>Score: <span id="snake-score">0</span></div><div style="height:10px"></div><button id="snake-start" class="play-btn">Start / Restart</button></div>
-        </div>
-      </div>
-
-      <!-- MEMORY -->
-      <div id="memory" class="game-area">
-        <div>
-          <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
-            <button id="memory-reset" class="play-btn">Shuffle / Reset</button>
-            <div>Tries: <span id="memory-tries">0</span></div>
-            <div style="flex:1"></div>
-            <div>Matches: <span id="memory-matches">0</span></div>
-          </div>
-          <div class="grid" id="memory-grid"></div>
-        </div>
-      </div>
-
-      <!-- FLAPPY -->
-      <div id="flappy" class="game-area">
-        <div style="display:flex;gap:12px">
-          <canvas id="flappy-canvas" width="480" height="360"></canvas>
-          <div style="padding-left:12px;color:var(--muted)"><h3 style="margin-top:0">Flappy Bird</h3><p>Controls: Space / Click / Tap</p><p>Score: <span id="flappy-score">0</span></p><p><button id="flappy-start" class="play-btn">Start / Restart</button></p></div>
-        </div>
-      </div>
-
-      <!-- PONG -->
-      <div id="pong" class="game-area">
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <canvas id="pong-canvas" width="600" height="360"></canvas>
-          <div style="padding-left:12px;color:var(--muted)"><h3 style="margin-top:0">Pong</h3><p>Left: W/S, Right: ↑/↓</p><p>Mode: <select id="pong-mode"><option>2 Player</option><option>Vs AI</option></select></p><p>Score: <span id="pong-score">0 - 0</span></p><p><button id="pong-start" class="play-btn">Start / Restart</button></p></div>
-        </div>
-      </div>
-
-      <!-- 2048 -->
-      <div id="2048" class="game-area">
-        <div style="display:flex;gap:18px;align-items:flex-start">
-          <div id="game-2048" style="width:420px;max-width:100%"></div>
-          <div style="color:var(--muted)"><h3>2048</h3><p>Arrow keys to slide tiles</p><p>Score: <span id="g2048-score">0</span></p><p><button id="g2048-restart" class="play-btn">Restart</button></p></div>
-        </div>
-      </div>
-
-      <!-- MINESWEEPER -->
-      <div id="mines" class="game-area">
-        <div style="display:flex;gap:18px">
-          <div id="mines-grid"></div>
-          <div style="color:var(--muted)"><h3>Minesweeper</h3><p>Left click reveal, right click flag</p><p>Mine count: <span id="mines-count">10</span></p><p><button id="mines-reset" class="play-btn">Reset</button></p></div>
-        </div>
-      </div>
-
-      <!-- BREAKOUT -->
-      <div id="breakout" class="game-area">
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <canvas id="breakout-canvas" width="640" height="360"></canvas>
-          <div style="padding-left:12px;color:var(--muted)"><h3>Breakout</h3><p>Arrow keys or mouse to move paddle</p><p>Score: <span id="break-score">0</span></p><p><button id="break-start" class="play-btn">Start / Restart</button></p></div>
-        </div>
-      </div>
-
-    </section>
-  </main>
-
-  <div class="about-panel" id="aboutPanel">
-    <div class="about-top"><strong style="color:var(--accent)">About & Settings</strong><button id="closeAbout" class="play-btn">Close</button></div>
-    <div class="about-grid">
-      <div class="about-item"><strong>Developer</strong><div>Sankar Seshapu</div></div>
-      <div class="about-item"><strong>Contact</strong><div>Phone: 6300348255</div><div>Email: sankarseshapu02@gmail.com</div></div>
-      <div class="about-item"><strong>Themes</strong><div><button class="theme-btn" data-theme="">Default</button> <button class="theme-btn" data-theme="theme-light">Light</button> <button class="theme-btn" data-theme="theme-neon">Neon</button> <button class="theme-btn" data-theme="theme-retro">Retro</button></div></div>
-      <div class="about-item"><strong>Settings</strong><div><label>Sound: <input type="checkbox" id="setting-sound" checked></label></div><div><label>Show Hints: <input type="checkbox" id="setting-hints" checked></label></div></div>
-      <div class="about-item"><strong>Timer</strong><div>Set game timer (seconds): <input id="game-timer" type="number" min="10" value="60" style="width:80px"></div></div>
-      <div class="about-item"><strong>Games</strong><div>Available: TicTacToe, Snake, Memory, Flappy, Pong, 2048, Minesweeper, Breakout</div></div>
-      <div class="about-item"><strong>Shortcuts</strong><div>Space: Flap/Start | Arrows: Move | W/S: Paddle</div></div>
-      <div class="about-item"><strong>Credits</strong><div>UI by GamesHub • Built in single HTML file</div></div>
-    </div>
+<body>
+<header>
+  <h1>GamesHub • Colorful Mobile</h1>
+  <div class="top-actions">
+    <button id="aboutBtn" class="badge">About</button>
+    <button id="themesBtn" class="badge">Themes</button>
   </div>
+</header>
+<main>
+  <section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-weight:800">Play — 20+ Games</div>
+      <div class="small">Touch-first • Bright themes</div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="games-grid" id="gamesGrid">
+      <!-- 20 game buttons generated by JS -->
+    </div>
+  </section>
 
-  <footer>Made with ♥ — Save as <code>gameshub-enhanced.html</code> and open in your browser.</footer>
+  <section class="workspace card" id="workspace">
+    <div class="controls">
+      <button id="restart" class="badge">Restart</button>
+      <button id="save" class="badge">Save Score</button>
+      <button id="mute" class="badge">Mute</button>
+      <div style="flex:1"></div>
+      <div class="small" id="currentLabel">Select a game</div>
+    </div>
 
-  <script>
-  // Basic wiring
-  const tabs = document.querySelectorAll('button.tab');
-  const playBtns = document.querySelectorAll('.play-btn[data-game]');
-  const gameAreas = document.querySelectorAll('.game-area');
-  let current = 'ttt';
-  function showGame(id){
-    current = id;
-    gameAreas.forEach(a=> a.id===id? a.classList.add('active') : a.classList.remove('active'));
-    tabs.forEach(t=> t.dataset.game===id? t.classList.add('active'): t.classList.remove('active'));
+    <div id="gameContainer">
+      <!-- dynamic game content inserted here -->
+    </div>
+  </section>
+</main>
+
+<!-- About / Settings modal -->
+<div class="modal" id="aboutModal"><div class="modal-card">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <strong style="font-size:16px">About & Settings</strong>
+    <button id="closeAbout" class="badge">Close</button>
+  </div>
+  <div style="margin-top:8px">Developer: <strong>Sankar Seshapu</strong></div>
+  <div style="margin-top:6px">Contact: <strong>6300348255</strong> • <strong>sankarsesapu02@gmail.com</strong></div>
+  <div style="margin-top:10px">Themes</div>
+  <div class="theme-row">
+    <button class="badge" data-theme="default">Default</button>
+    <button class="badge" data-theme="neon">Neon</button>
+    <button class="badge" data-theme="sunny">Sunny</button>
+    <button class="badge" data-theme="retro">Retro</button>
+  </div>
+  <div style="margin-top:10px">Settings</div>
+  <div style="display:flex;gap:8px;margin-top:6px"><label class="small">Sound <input id="soundToggle" type="checkbox" checked></label><label class="small">Haptics <input id="hapticsToggle" type="checkbox"></label></div>
+  <div style="margin-top:10px;font-size:13px;color:var(--muted)">This file is a mobile-first single HTML demo. Some games are simplified playable versions; others are placeholders ready for expansion.</div>
+</div></div>
+
+<footer style="padding:12px;text-align:center;font-size:13px;color:var(--muted)">Made with ❤️ — Tap a tile to play. Want any game fully expanded? Tell me which one.</footer>
+
+<script>
+/* Data: list of 24 game entries (some implemented, some placeholder) */
+const games = [
+  {id:'ttt', name:'Tic Tac Toe', tag:'g1', impl:true},
+  {id:'snake', name:'Snake', tag:'g2', impl:true},
+  {id:'memory', name:'Memory Match', tag:'g1', impl:true},
+  {id:'flappy', name:'Flappy Bird', tag:'g3', impl:true},
+  {id:'pong', name:'Pong', tag:'g2', impl:true},
+  {id:'2048', name:'2048', tag:'g4', impl:true},
+  {id:'mines', name:'Minesweeper', tag:'g1', impl:true},
+  {id:'breakout', name:'Breakout', tag:'g2', impl:true},
+  {id:'candy', name:'Candy Crush (Match-3)', tag:'g3', impl:true},
+  {id:'bubble', name:'Bubble Shooter', tag:'g4', impl:true},
+  {id:'shooter', name:'Target Shooter', tag:'g1', impl:true},
+  {id:'football', name:'Penalty Shootout', tag:'g2', impl:true},
+  {id:'carrom', name:'Carrom (flick)', tag:'g3', impl:true},
+  {id:'ludo', name:'Ludo (mini)', tag:'g4', impl:true},
+  {id:'carRace', name:'Car Race (simple)', tag:'g1', impl:true},
+  {id:'bikeRace', name:'Bike Race', tag:'g2', impl:true},
+  {id:'carShoot', name:'Car Race Shooting', tag:'g3', impl:false},
+  {id:'gunshot', name:'Gun Shot (2D)', tag:'g4', impl:false},
+  {id:'football11', name:'Football (vs AI)', tag:'g1', impl:false},
+  {id:'pool', name:'Pool / Billiards', tag:'g2', impl:false},
+  {id:'ticFast', name:'Fast Tap', tag:'g3', impl:true},
+  {id:'matchPairs', name:'Match Pairs (Quick)', tag:'g4', impl:true},
+  {id:'endless', name:'Endless Runner', tag:'g1', impl:false},
+  {id:'pongAir', name:'Air Pong', tag:'g2', impl:false}
+];
+
+// Build grid
+const grid = document.getElementById('gamesGrid');
+games.forEach(g=>{
+  const b = document.createElement('button'); b.className = 'game-btn '+g.tag; b.textContent = g.name; b.dataset.id = g.id; b.addEventListener('click', ()=> loadGame(g.id)); grid.appendChild(b);
+});
+
+const container = document.getElementById('gameContainer'); const currentLabel = document.getElementById('currentLabel');
+
+function clearContainer(){ container.innerHTML=''; }
+
+/* Helper: show simple message for placeholder games */
+function placeholder(name){ clearContainer(); currentLabel.textContent = name + ' (placeholder)'; const el = document.createElement('div'); el.style.padding='14px'; el.innerHTML = `<div style="font-weight:800;font-size:18px">${name}</div><div style="margin-top:8px;color:var(--muted)">This game is a placeholder. I can fully implement it on request (animations, physics, levels, multiplayer).</div>`; container.appendChild(el); }
+
+/* Implementations: we'll add compact playable versions for many games */
+
+/* 1) Tic Tac Toe */
+function loadTicTacToe(){ clearContainer(); currentLabel.textContent='Tic Tac Toe'; const board = document.createElement('div'); board.style.display='grid'; board.style.gridTemplateColumns='repeat(3,1fr)'; board.style.gap='8px'; for(let i=0;i<9;i++){ const c = document.createElement('button'); c.style.height='86px'; c.style.borderRadius='10px'; c.style.fontSize='34px'; c.addEventListener('click', makeMove); c.dataset.i = i; board.appendChild(c); }
+  const status = document.createElement('div'); status.className='small'; status.style.marginTop='8px'; container.appendChild(board); container.appendChild(status);
+  let boardState = Array(9).fill(null); let turn='X'; let over=false;
+  function render(){ for(let i=0;i<9;i++){ board.children[i].textContent = boardState[i]||''; } status.textContent = over? 'Game over' : 'Turn: '+turn; }
+  function check(){ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(const w of wins){ const [a,b,c] = w; if(boardState[a] && boardState[a]===boardState[b] && boardState[a]===boardState[c]){ over=true; status.textContent = boardState[a] + ' wins!'; return; } } if(boardState.every(Boolean)){ over=true; status.textContent='Draw'; } }
+  function makeMove(e){ if(over) return; const i = +e.currentTarget.dataset.i; if(boardState[i]) return; boardState[i]=turn; turn = turn==='X'?'O':'X'; render(); check(); }
+  render();
+}
+
+/* 2) Snake */
+function loadSnake(){ clearContainer(); currentLabel.textContent='Snake'; const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40, 360); canvas.height = canvas.width; canvas.className='canvas'; container.appendChild(canvas); const scoreEl = document.createElement('div'); scoreEl.className='small'; scoreEl.style.marginTop='8px'; scoreEl.textContent = 'Score: 0'; container.appendChild(scoreEl);
+  const ctx = canvas.getContext('2d'); let grid = 18, size = canvas.width / grid; let snake = [{x:8,y:8}]; let dir={x:1,y:0}; let food = {x:12,y:12}; let score=0; let iv=null; function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#041624'; ctx.fillRect(0,0,canvas.width,canvas.height); // food
+    ctx.fillStyle='#ff6b6b'; ctx.fillRect(food.x*size+2, food.y*size+2, size-4, size-4); ctx.fillStyle='#74f'; snake.forEach(s=> ctx.fillRect(s.x*size+1, s.y*size+1, size-2, size-2)); }
+  function step(){ const head = {x:snake[0].x+dir.x, y:snake[0].y+dir.y}; head.x = (head.x+grid)%grid; head.y = (head.y+grid)%grid; if(snake.some(p=>p.x===head.x && p.y===head.y)){ clearInterval(iv); return; } snake.unshift(head); if(head.x===food.x && head.y===food.y){ score++; scoreEl.textContent='Score: '+score; placeFood(); } else snake.pop(); draw(); }
+  function placeFood(){ let ok=false; while(!ok){ const x=Math.floor(Math.random()*grid), y=Math.floor(Math.random()*grid); if(!snake.some(s=>s.x===x && s.y===y)){ food={x,y}; ok=true; } } }
+  placeFood(); draw(); iv = setInterval(step,120);
+  // swipe controls
+  let ts=null; canvas.addEventListener('touchstart', e=> ts=e.changedTouches[0]); canvas.addEventListener('touchend', e=>{ const t2 = e.changedTouches[0]; const dx = t2.clientX - ts.clientX, dy = t2.clientY - ts.clientY; if(Math.abs(dx)>Math.abs(dy)){ if(dx>10 && dir.x!==-1) dir={x:1,y:0}; else if(dx<-10 && dir.x!==1) dir={x:-1,y:0}; } else { if(dy>10 && dir.y!==-1) dir={x:0,y:1}; else if(dy<-10 && dir.y!==1) dir={x:0,y:-1}; } });
+}
+
+/* 3) Memory Match (quick) */
+function loadMemory(){ clearContainer(); currentLabel.textContent='Memory Match'; const gridEl = document.createElement('div'); gridEl.style.display='grid'; gridEl.style.gridTemplateColumns='repeat(4,1fr)'; gridEl.style.gap='8px'; container.appendChild(gridEl); const status = document.createElement('div'); status.className='small'; status.style.marginTop='8px'; container.appendChild(status);
+  const symbols = '🍎🍌🍇🍓🍊🍑🍍🥝'.split(''); const deck = [...symbols,...symbols]; for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]] }
+  let revealed = Array(deck.length).fill(false); let tries=0, matches=0, lock=false;
+  function render(){ gridEl.innerHTML=''; deck.forEach((s,i)=>{ const b=document.createElement('button'); b.style.height='72px'; b.style.borderRadius='10px'; b.style.fontSize='28px'; b.textContent = revealed[i]? s : ''; b.addEventListener('click', ()=> flip(i)); gridEl.appendChild(b); }); status.textContent = `Tries: ${tries} • Matches: ${matches}`; }
+  function flip(i){ if(lock||revealed[i]) return; revealed[i]=true; render(); const open = revealed.map((v,idx)=> v? {sym:deck[idx], idx}:null).filter(Boolean); if(open.length%2===0){ lock=true; tries++; const a=open[open.length-2], b=open[open.length-1]; if(a.sym===b.sym){ matches++; lock=false; render(); } else { setTimeout(()=>{ revealed[a.idx]=false; revealed[b.idx]=false; lock=false; render(); },700); } } }
+  render();
+}
+
+/* 4) Flappy (compact) */
+function loadFlappy(){ clearContainer(); currentLabel.textContent='Flappy Bird'; const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height = 260; canvas.className='canvas'; container.appendChild(canvas); const score = document.createElement('div'); score.className='small'; score.style.marginTop='8px'; score.textContent='Score: 0'; container.appendChild(score);
+  const ctx = canvas.getContext('2d'); let state = {bird:{x:60,y:120,vy:0},pipes:[],gravity:0.6,lift:-9,running:false,score:0,tick:0}; let iv=null; function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); const sky = ctx.createLinearGradient(0,0,0,canvas.height); sky.addColorStop(0,'#84d5ff'); sky.addColorStop(1,'#bdefff'); ctx.fillStyle = sky; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#0a4'; state.pipes.forEach(p=>{ ctx.fillRect(p.x,0,p.w,p.top); ctx.fillRect(p.x,p.bottom,p.w,canvas.height-p.bottom); }); ctx.fillStyle='#ffdd55'; ctx.beginPath(); ctx.arc(state.bird.x,state.bird.y,10,0,Math.PI*2); ctx.fill(); }
+  function step(){ if(!state.running) return; state.tick++; if(state.tick%80===0){ const gap=90; const top=30+Math.random()*(canvas.height-gap-60); state.pipes.push({x:canvas.width,w:40,top:top,bottom:top+gap}); } state.pipes.forEach(p=>p.x-=2); state.pipes=state.pipes.filter(p=>p.x+p.w>0); state.bird.vy += state.gravity; state.bird.y += state.bird.vy; state.pipes.forEach(p=>{ if(!p.passed && p.x + p.w < state.bird.x){ p.passed=true; state.score++; score.textContent='Score: '+state.score; } if(state.bird.x+10>p.x && state.bird.x-10<p.x+p.w){ if(state.bird.y-10 < p.top || state.bird.y+10 > p.bottom) stop(); } }); if(state.bird.y > canvas.height || state.bird.y < 0) stop(); draw(); }
+  function start(){ stop(); state = {bird:{x:60,y:120,vy:0},pipes:[],gravity:0.6,lift:-9,running:true,score:0,tick:0}; score.textContent='Score: 0'; iv = setInterval(step,20); }
+  function stop(){ if(iv) clearInterval(iv); iv=null; state.running=false; }
+  function flap(){ if(!state.running) start(); state.bird.vy = state.lift; }
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); flap(); }); draw(); start();
+}
+
+/* 5) Pong (compact) */
+function loadPong(){ clearContainer(); currentLabel.textContent='Pong'; const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height=220; canvas.className='canvas'; container.appendChild(canvas); const score = document.createElement('div'); score.className='small'; score.style.marginTop='8px'; score.textContent='0 - 0'; container.appendChild(score);
+  const ctx = canvas.getContext('2d'); let state = {p1Y:80,p2Y:80,ball:{x:canvas.width/2,y:canvas.height/2,vx:3,vy:2},score:[0,0],running:true}; function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#022'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.fillRect(6,state.p1Y,8,60); ctx.fillRect(canvas.width-14,state.p2Y,8,60); ctx.beginPath(); ctx.arc(state.ball.x,state.ball.y,6,0,Math.PI*2); ctx.fill(); }
+  function step(){ if(!state.running) return; state.ball.x += state.ball.vx; state.ball.y += state.ball.vy; if(state.ball.y<0||state.ball.y>canvas.height) state.ball.vy *= -1; if(state.ball.x<20 && state.ball.y>state.p1Y && state.ball.y<state.p1Y+60){ state.ball.vx *= -1; } if(state.ball.x>canvas.width-20 && state.ball.y>state.p2Y && state.ball.y<state.p2Y+60){ state.ball.vx *= -1; } if(state.ball.x<0){ state.score[1]++; resetBall(); } if(state.ball.x>canvas.width){ state.score[0]++; resetBall(); } score.textContent = state.score[0] + ' - ' + state.score[1]; draw(); }
+  function resetBall(){ state.ball = {x:canvas.width/2,y:canvas.height/2,vx:(Math.random()>0.5?3:-3),vy:(Math.random()*4)-2}; }
+  resetBall(); draw(); const iv = setInterval(step,16);
+  canvas.addEventListener('touchmove', e=>{ const t=e.touches[0]; const rect=canvas.getBoundingClientRect(); const x=t.clientX-rect.left, y=t.clientY-rect.top; if(x<canvas.width/2) state.p1Y = Math.max(0, Math.min(canvas.height-60, y-30)); else state.p2Y = Math.max(0, Math.min(canvas.height-60, y-30)); });
+}
+
+/* 6) 2048 already compact version */
+function load2048(){ clearContainer(); currentLabel.textContent='2048'; const root = document.createElement('div'); root.style.width='100%'; container.appendChild(root); // reuse prior small implementation
+  const board = document.createElement('div'); board.style.display='grid'; board.style.gridTemplateColumns='repeat(4,1fr)'; board.style.gap='8px'; board.style.width='100%'; for(let i=0;i<16;i++){ const c=document.createElement('div'); c.style.height='66px'; c.style.borderRadius='8px'; c.style.display='flex'; c.style.alignItems='center'; c.style.justifyContent='center'; c.style.fontSize='20px'; c.style.background='rgba(255,255,255,0.02)'; board.appendChild(c); } root.appendChild(board); let g = Array.from({length:4},()=>Array(4).fill(0)); let score=0; function addTile(){ const empties=[]; for(let r=0;r<4;r++) for(let c=0;c<4;c++) if(g[r][c]===0) empties.push([r,c]); if(!empties.length) return; const p=empties[Math.floor(Math.random()*empties.length)]; g[p[0]][p[1]] = Math.random()>0.85?4:2; }
+  function render(){ let idx=0; for(let r=0;r<4;r++) for(let c=0;c<4;c++){ const v=g[r][c]; const el = board.children[idx++]; el.textContent = v? v : ''; el.style.background = v? 'linear-gradient(90deg,#ffd166,#ff9f1c)' : 'rgba(255,255,255,0.02)'; } }
+  function rotate(m){ for(let t=0;t<m;t++){ const ng = Array.from({length:4},()=>Array(4).fill(0)); for(let r=0;r<4;r++) for(let c=0;c<4;c++) ng[c][3-r]=g[r][c]; g=ng; } }
+  function move(dir){ const map={'left':0,'up':1,'right':2,'down':3}; rotate(map[dir]); let moved=false; for(let r=0;r<4;r++){ let row = g[r].filter(v=>v); for(let i=0;i<row.length-1;i++){ if(row[i]===row[i+1]){ row[i]*=2; score+=row[i]; row[i+1]=0; moved=true; } } row = row.filter(v=>v); while(row.length<4) row.push(0); g[r]=row; }
+    rotate((4-map[dir])%4); if(moved) addTile(); render(); }
+  addTile(); addTile(); render(); // swipe
+  let s=null; root.addEventListener('touchstart', e=> s=e.changedTouches[0]); root.addEventListener('touchend', e=>{ const t2=e.changedTouches[0]; const dx=t2.clientX-s.clientX, dy=t2.clientY-s.clientY; if(Math.abs(dx)>Math.abs(dy)){ if(dx>20) move('right'); else if(dx<-20) move('left'); } else { if(dy>20) move('down'); else if(dy<-20) move('up'); } });
+}
+
+/* 7) Minesweeper compact */
+function loadMines(){ clearContainer(); currentLabel.textContent='Minesweeper'; const gridEl = document.createElement('div'); container.appendChild(gridEl); const status = document.createElement('div'); status.className='small'; status.style.marginTop='8px'; container.appendChild(status);
+  const rows=8, cols=8, mines=10; let arr = Array(rows).fill(0).map(()=>Array(cols).fill(0)); let placed=0; while(placed<mines){ const r=Math.floor(Math.random()*rows), c=Math.floor(Math.random()*cols); if(arr[r][c]===-1) continue; arr[r][c]=-1; placed++; } for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){ if(arr[r][c]===-1) continue; let cnt=0; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=r+dr, nc=c+dc; if(nr>=0 && nr<rows && nc>=0 && nc<cols && arr[nr][nc]===-1) cnt++; } arr[r][c]=cnt; }
+  function render(){ gridEl.innerHTML=''; gridEl.style.display='grid'; gridEl.style.gridTemplateColumns = `repeat(${cols},36px)`; gridEl.style.gap='6px'; for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){ const b=document.createElement('button'); b.style.width='36px'; b.style.height='36px'; b.style.borderRadius='6px'; b.dataset.r=r; b.dataset.c=c; b.addEventListener('click', ()=> reveal(r,c,b)); gridEl.appendChild(b); } }
+  function reveal(r,c,btn){ const val = arr[r][c]; if(val===-1){ btn.textContent='💥'; alert('Boom!'); loadMines(); return; } btn.textContent = val? val : ''; btn.disabled=true; if(val===0){ for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=r+dr, nc=c+dc; if(nr>=0 && nr<rows && nc>=0 && nc<cols){ const idx = nr*cols + nc; const btn2 = gridEl.children[idx]; if(btn2 && !btn2.disabled) reveal(nr,nc,btn2); } } } }
+  render(); }
+
+/* 8) Breakout compact */
+function loadBreakout(){ clearContainer(); currentLabel.textContent='Breakout'; const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height=220; canvas.className='canvas'; container.appendChild(canvas); const score = document.createElement('div'); score.className='small'; score.style.marginTop='8px'; score.textContent='Score:0'; container.appendChild(score);
+  const ctx = canvas.getContext('2d'); let state={paddleX:(canvas.width-72)/2, ball:{x:canvas.width/2,y:canvas.height-60,vx:3,vy:-3}, bricks:[], rows:4, cols:6, score:0, running:true}; const bw=(canvas.width-40)/state.cols; for(let r=0;r<state.rows;r++) for(let c=0;c<state.cols;c++) state.bricks.push({x:20+c*bw+4,y:30+r*22,w:bw-6,h:16,alive:true}); function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#011'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.fillRect(state.paddleX, canvas.height-18, 72, 12); ctx.beginPath(); ctx.arc(state.ball.x,state.ball.y,8,0,Math.PI*2); ctx.fill(); state.bricks.forEach(br=>{ if(br.alive){ ctx.fillStyle='#ff7'; ctx.fillRect(br.x,br.y,br.w,br.h); } }); score.textContent='Score:'+state.score; }
+  function step(){ if(!state.running) return; state.ball.x += state.ball.vx; state.ball.y += state.ball.vy; if(state.ball.x<0||state.ball.x>canvas.width) state.ball.vx *= -1; if(state.ball.y<0) state.ball.vy *= -1; if(state.ball.y>canvas.height){ state.running=false; alert('Lost'); } if(state.ball.y + 8 > canvas.height-18 && state.ball.x > state.paddleX && state.ball.x < state.paddleX + 72){ state.ball.vy *= -1; } state.bricks.forEach(br=>{ if(br.alive && state.ball.x>br.x && state.ball.x<br.x+br.w && state.ball.y>br.y && state.ball.y<br.y+br.h){ br.alive=false; state.ball.vy *= -1; state.score += 10; } }); draw(); }
+  draw(); const iv = setInterval(step,16); canvas.addEventListener('touchmove', e=>{ const t=e.touches[0]; const rect=canvas.getBoundingClientRect(); state.paddleX = Math.max(0, Math.min(canvas.width-72, t.clientX-rect.left-36)); });
+}
+
+/* 9) Candy Crush (simple match-3 grid) */
+function loadCandy(){ clearContainer(); currentLabel.textContent='Candy Crush (mini)'; const wrap = document.createElement('div'); wrap.style.width='100%'; const gridEl = document.createElement('div'); gridEl.style.display='grid'; gridEl.style.gridTemplateColumns='repeat(7,1fr)'; gridEl.style.gap='6px'; wrap.appendChild(gridEl); const scoreEl = document.createElement('div'); scoreEl.className='small'; scoreEl.style.marginTop='8px'; scoreEl.textContent='Score:0'; wrap.appendChild(scoreEl); container.appendChild(wrap);
+  const cols=7, rows=7; const types=['🍬','🍒','🍋','🍇','🍊']; let board=[]; function init(){ board=[]; for(let r=0;r<rows;r++){ for(let c=0;c<cols;c++){ board.push(types[Math.floor(Math.random()*types.length)]); } } render(); }
+  function render(){ gridEl.innerHTML=''; for(let i=0;i<board.length;i++){ const b=document.createElement('button'); b.style.height='46px'; b.style.fontSize='24px'; b.style.borderRadius='8px'; b.textContent = board[i]; b.dataset.i=i; b.addEventListener('click', ()=> select(i)); gridEl.appendChild(b); } }
+  let sel=null; function select(i){ if(sel===null){ sel=i; gridEl.children[i].style.opacity=0.6; } else { // swap if adjacent
+      const r1=Math.floor(sel/cols), c1=sel%cols; const r2=Math.floor(i/cols), c2=i%cols; const dist = Math.abs(r1-r2)+Math.abs(c1-c2); if(dist===1){ [board[sel],board[i]]=[board[i],board[sel]]; // check matches
+          if(!resolveMatches()){ // swap back
+            [board[sel],board[i]]=[board[i],board[sel]];
+          } }
+      sel=null; render(); }
   }
-  tabs.forEach(t=>t.addEventListener('click', ()=> showGame(t.dataset.game)));
-  playBtns.forEach(p=> p.dataset.game && p.addEventListener('click', ()=> showGame(p.dataset.game)));
-  document.getElementById('restart').addEventListener('click', ()=>{
-    if(current==='ttt') tttReset();
-    if(current==='snake') startSnake();
-    if(current==='memory') memoryReset();
-    if(current==='flappy') flappyReset();
-    if(current==='pong') pongReset();
-    if(current==='2048') g2048Reset();
-    if(current==='mines') minesReset();
-    if(current==='breakout') breakoutReset();
-  });
-
-  // ABOUT panel
-  const aboutBtn = document.getElementById('aboutBtn'); const aboutPanel = document.getElementById('aboutPanel');
-  aboutBtn.addEventListener('click', ()=> aboutPanel.classList.toggle('show'));
-  document.getElementById('closeAbout').addEventListener('click', ()=> aboutPanel.classList.remove('show'));
-  document.querySelectorAll('.theme-btn').forEach(b=> b.addEventListener('click', ()=>{ document.body.className = b.dataset.theme; }));
-
-  /* ======================= TIC TAC TOE (unchanged) ======================= */
-  const tttBoardEl = document.getElementById('ttt-board');
-  const tttStatus = document.getElementById('ttt-status');
-  let tttBoard = Array(9).fill(null); let tttTurn = 'X'; let tttOver=false;
-  function tttRender(){ tttBoardEl.innerHTML=''; tttBoard.forEach((v,i)=>{ const c=document.createElement('div'); c.className='cell'; c.dataset.i=i; c.textContent=v||''; c.addEventListener('click', ()=>{ if(tttOver || tttBoard[i]) return; tttBoard[i]=tttTurn; tttTurn = tttTurn==='X'? 'O':'X'; tttRender(); checkTtt(); }); tttBoardEl.appendChild(c); }); tttStatus.textContent = tttOver? 'Game over' : `Player ${tttTurn}'s turn`; }
-  function checkTtt(){ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(const w of wins){ const [a,b,c]=w; if(tttBoard[a] && tttBoard[a]===tttBoard[b] && tttBoard[a]===tttBoard[c]){ tttOver=true; tttStatus.textContent = `Player ${tttBoard[a]} wins!`; return; } } if(tttBoard.every(Boolean)){ tttOver=true; tttStatus.textContent='Draw.' } }
-  function tttReset(){ tttBoard=Array(9).fill(null); tttTurn='X'; tttOver=false; tttRender(); }
-  tttReset();
-
-  /* ======================= SNAKE (improved visuals) ======================= */
-  const snakeCanvas = document.getElementById('snake-canvas'); const sctx = snakeCanvas.getContext('2d'); const snakeScoreEl = document.getElementById('snake-score');
-  let snakeInterval=null; let snakeState = {dir:{x:1,y:0}, snake:[{x:6,y:6}], food:{x:12,y:12}, grid:21, score:0, running:false, speed:110};
-  function drawSnake(){ const G = snakeState.grid; const size = snakeCanvas.width / G; sctx.clearRect(0,0,snakeCanvas.width,snakeCanvas.height);
-    // draw background
-    const grad = sctx.createLinearGradient(0,0,snakeCanvas.width,snakeCanvas.height); grad.addColorStop(0,'#021a1f'); grad.addColorStop(1,'#032732'); sctx.fillStyle = grad; sctx.fillRect(0,0,snakeCanvas.width,snakeCanvas.height);
-    // draw food
-    sctx.fillStyle = 'rgba(255,130,130,0.95)'; sctx.fillRect(snakeState.food.x*size+2, snakeState.food.y*size+2, size-4, size-4);
-    // snake
-    sctx.fillStyle = 'rgba(120,230,255,0.95)'; snakeState.snake.forEach((s,i)=> sctx.fillRect(s.x*size+1, s.y*size+1, size-2, size-2));
-  }
-  function stepSnake(){ const head = {...snakeState.snake[0]}; head.x += snakeState.dir.x; head.y += snakeState.dir.y; const G = snakeState.grid; head.x = (head.x + G) % G; head.y = (head.y + G) % G; if(snakeState.snake.some(p=>p.x===head.x && p.y===head.y)) { stopSnake(); return; } snakeState.snake.unshift(head); if(head.x===snakeState.food.x && head.y===snakeState.food.y){ snakeState.score+=1; snakeScoreEl.textContent=snakeState.score; placeFood(); } else snakeState.snake.pop(); drawSnake(); }
-  function placeFood(){ const G=snakeState.grid; let valid=false; while(!valid){ const x=Math.floor(Math.random()*G), y=Math.floor(Math.random()*G); if(!snakeState.snake.some(p=>p.x===x && p.y===y)){ snakeState.food={x,y}; valid=true; } } }
-  function startSnake(){ stopSnake(); snakeState = {dir:{x:1,y:0}, snake:[{x:6,y:6}], food:{x:12,y:12}, grid:21, score:0, running:true, speed:110}; placeFood(); snakeScoreEl.textContent=0; drawSnake(); snakeInterval=setInterval(stepSnake, snakeState.speed); }
-  function stopSnake(){ if(snakeInterval) clearInterval(snakeInterval); snakeInterval=null; snakeState.running=false; }
-  document.getElementById('snake-start').addEventListener('click', startSnake);
-  window.addEventListener('keydown',(e)=>{ if(current!=='snake') return; if(e.key.includes('Arrow')){ e.preventDefault(); const dir = e.key.replace('Arrow','').toLowerCase(); if(dir==='up' && snakeState.dir.y!==1) snakeState.dir={x:0,y:-1}; if(dir==='down' && snakeState.dir.y!==-1) snakeState.dir={x:0,y:1}; if(dir==='left' && snakeState.dir.x!==1) snakeState.dir={x:-1,y:0}; if(dir==='right' && snakeState.dir.x!==-1) snakeState.dir={x:1,y:0}; } });
-
-  /* ======================= MEMORY (unchanged) ======================= */
-  const memoryGrid = document.getElementById('memory-grid'); const memoryTriesEl = document.getElementById('memory-tries'); const memoryMatchesEl = document.getElementById('memory-matches');
-  let memoryState = {cards:[], revealed:[], matches:0, tries:0, lock:false};
-  function memoryReset(){ const symbols = '🍎🍌🍇🍓🍊🍑🍍🥝⭐️❄️🔥💎🍉🍋🍐🍒'.split(''); const pairs = symbols.slice(0,12); const deck = [...pairs,...pairs]; for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]] } memoryState.cards = deck; memoryState.revealed = Array(deck.length).fill(false); memoryState.matches=0; memoryState.tries=0; memoryState.lock=false; renderMemory(); memoryTriesEl.textContent=0; memoryMatchesEl.textContent=0; }
-  function renderMemory(){ memoryGrid.innerHTML=''; memoryState.cards.forEach((s,i)=>{ const c = document.createElement('div'); c.className='card'; if(memoryState.revealed[i]) c.classList.add('revealed'); c.textContent = s; c.addEventListener('click', ()=> onCard(i)); memoryGrid.appendChild(c); }); }
-  function onCard(i){ if(memoryState.lock || memoryState.revealed[i]) return; memoryState.revealed[i]=true; renderMemory(); const open = memoryState.revealed.map((v,idx)=> v? {sym:memoryState.cards[idx], idx} : null).filter(Boolean); if(open.length%2===0){ memoryState.lock=true; memoryState.tries++; memoryTriesEl.textContent=memoryState.tries; const a=open[open.length-2], b=open[open.length-1]; if(a.sym===b.sym){ memoryState.matches++; memoryMatchesEl.textContent=memoryState.matches; memoryState.lock=false; if(memoryState.matches===Math.floor(memoryState.cards.length/2)){ /* win */ } } else { setTimeout(()=>{ memoryState.revealed[a.idx]=false; memoryState.revealed[b.idx]=false; memoryState.lock=false; renderMemory(); },700) } } }
-  document.getElementById('memory-reset').addEventListener('click', memoryReset);
-  memoryReset();
-
-  /* ======================= FLAPPY (unchanged) ======================= */
-  const flappyCanvas = document.getElementById('flappy-canvas'); const fctx = flappyCanvas.getContext('2d'); let flappyState = {bird:{x:80,y:160,vy:0}, pipes:[], gravity:0.6, lift:-10, running:false, score:0, tick:0};
-  function drawFlappy(){ fctx.clearRect(0,0,flappyCanvas.width,flappyCanvas.height); const sky = fctx.createLinearGradient(0,0,0,flappyCanvas.height); sky.addColorStop(0,'#84d5ff'); sky.addColorStop(1,'#bdefff'); fctx.fillStyle = sky; fctx.fillRect(0,0,flappyCanvas.width,flappyCanvas.height); fctx.fillStyle='#0a4'; flappyState.pipes.forEach(p=>{ fctx.fillRect(p.x,0,p.w,p.top); fctx.fillRect(p.x,p.bottom,p.w,flappyCanvas.height-p.bottom); }); fctx.fillStyle='#ffdd55'; fctx.beginPath(); fctx.arc(flappyState.bird.x, flappyState.bird.y, 12, 0, Math.PI*2); fctx.fill(); }
-  function stepFlappy(){ if(!flappyState.running) return; flappyState.tick++; if(flappyState.tick%90===0){ const gap=100; const top = 40 + Math.random() * (flappyCanvas.height - gap - 80); flappyState.pipes.push({x:flappyCanvas.width, w:48, top:top, bottom:top+gap}); } flappyState.pipes.forEach(p=> p.x -= 2); flappyState.pipes = flappyState.pipes.filter(p=> p.x + p.w > 0); flappyState.bird.vy += flappyState.gravity; flappyState.bird.y += flappyState.bird.vy; flappyState.pipes.forEach(p=>{ if(!p.passed && p.x + p.w < flappyState.bird.x){ p.passed=true; flappyState.score++; document.getElementById('flappy-score').textContent = flappyState.score } const bx = flappyState.bird.x, by = flappyState.bird.y; if(bx+12 > p.x && bx-12 < p.x + p.w){ if(by-12 < p.top || by+12 > p.bottom) stopFlappy(); } }); if(flappyState.bird.y > flappyCanvas.height || flappyState.bird.y < 0) stopFlappy(); drawFlappy(); }
-  let flappyInt=null; function startFlappy(){ stopFlappy(); flappyState = {bird:{x:80,y:160,vy:0}, pipes:[], gravity:0.6, lift:-10, running:true, score:0, tick:0}; document.getElementById('flappy-score').textContent=0; flappyInt = setInterval(stepFlappy, 20); } function stopFlappy(){ if(flappyInt) clearInterval(flappyInt); flappyInt=null; flappyState.running=false; } function flap(){ if(!flappyState.running) startFlappy(); flappyState.bird.vy = flappyState.lift; }
-  document.getElementById('flappy-start').addEventListener('click', startFlappy); flappyCanvas.addEventListener('click', flap);
-
-  /* ======================= PONG (simple) ======================= */
-  const pongCanvas = document.getElementById('pong-canvas'); const pctx = pongCanvas.getContext('2d'); const pongScoreEl = document.getElementById('pong-score'); let pongInt=null; let pongState = {p1Y:150,p2Y:150,ball:{x:300,y:180,vx:4,vy:2},score:[0,0],mode:'2 Player',running:false};
-  function drawPong(){ pctx.clearRect(0,0,pongCanvas.width,pongCanvas.height); pctx.fillStyle='#001'; pctx.fillRect(0,0,pongCanvas.width,pongCanvas.height); pctx.fillStyle='#fff'; pctx.fillRect(10,pongState.p1Y,10,80); pctx.fillRect(pongCanvas.width-20,pongState.p2Y,10,80); pctx.beginPath(); pctx.arc(pongState.ball.x,pongState.ball.y,8,0,Math.PI*2); pctx.fill(); }
-  function stepPong(){ if(!pongState.running) return; pongState.ball.x += pongState.ball.vx; pongState.ball.y += pongState.ball.vy; if(pongState.ball.y<0 || pongState.ball.y>pongCanvas.height) pongState.ball.vy *= -1; // paddle collisions
-    if(pongState.ball.x < 30 && pongState.ball.y > pongState.p1Y && pongState.ball.y < pongState.p1Y + 80){ pongState.ball.vx *= -1; }
-    if(pongState.ball.x > pongCanvas.width - 30 && pongState.ball.y > pongState.p2Y && pongState.ball.y < pongState.p2Y + 80){ pongState.ball.vx *= -1; }
-    if(pongState.ball.x < 0){ pongState.score[1]++; resetBall(); }
-    if(pongState.ball.x > pongCanvas.width){ pongState.score[0]++; resetBall(); }
-    if(pongState.mode==='Vs AI'){ // simple AI for right paddle
-      const target = pongState.ball.y - 40; pongState.p2Y += (target - pongState.p2Y) * 0.12;
+  function resolveMatches(){ let removed=false; const toRem = new Set(); // horizontal
+    for(let r=0;r<rows;r++){ for(let c=0;c<cols-2;c++){ const a = board[r*cols+c]; if(a && a===board[r*cols+c+1] && a===board[r*cols+c+2]){ toRem.add(r*cols+c); toRem.add(r*cols+c+1); toRem.add(r*cols+c+2); } } }
+    // vertical
+    for(let c=0;c<cols;c++){ for(let r=0;r<rows-2;r++){ const a = board[r*cols+c]; if(a && a===board[(r+1)*cols+c] && a===board[(r+2)*cols+c]){ toRem.add(r*cols+c); toRem.add((r+1)*cols+c); toRem.add((r+2)*cols+c); } } }
+    if(toRem.size>0){ removed=true; toRem.forEach(i=> board[i]=null); // gravity
+      for(let c=0;c<cols;c++){ const col=[]; for(let r=rows-1;r>=0;r--){ const v = board[r*cols+c]; if(v) col.push(v); } for(let r=rows-1;r>=0;r--){ board[r*cols+c] = col.shift() || types[Math.floor(Math.random()*types.length)]; } }
     }
-    pongScoreEl.textContent = `${pongState.score[0]} - ${pongState.score[1]}`;
-    drawPong(); }
-  function resetBall(){ pongState.ball = {x:300,y:180,vx: (Math.random()>0.5?4:-4), vy: (Math.random()*4)-2}; }
-  function pongStart(){ pongReset(); pongState.running=true; if(!pongInt) pongInt = setInterval(stepPong,16); }
-  function pongReset(){ pongState = {p1Y:150,p2Y:150,ball:{x:300,y:180,vx:4,vy:2},score:[0,0],mode: document.getElementById('pong-mode').value, running:false}; resetBall(); drawPong(); }
-  document.getElementById('pong-start').addEventListener('click', pongStart); document.getElementById('pong-mode').addEventListener('change', e=> pongState.mode = e.target.value );
-  window.addEventListener('keydown', (e)=>{ if(current==='pong'){ if(e.key==='w') pongState.p1Y -= 18; if(e.key==='s') pongState.p1Y += 18; if(e.key==='ArrowUp') pongState.p2Y -= 18; if(e.key==='ArrowDown') pongState.p2Y += 18; } });
-
-  /* ======================= 2048 (minimal) ======================= */
-  const g2048Root = document.getElementById('game-2048'); const g2048Score = document.getElementById('g2048-score'); let g2048=null;
-  function g2048Create(){ g2048Root.innerHTML=''; const wrap = document.createElement('div'); wrap.style.width='420px'; wrap.style.maxWidth='100%'; wrap.style.padding='12px'; wrap.style.background='linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))'; wrap.style.borderRadius='10px'; const board = document.createElement('div'); board.style.display='grid'; board.style.gridTemplateColumns='repeat(4,1fr)'; board.style.gap='8px'; board.style.padding='8px'; board.style.background='transparent'; board.style.borderRadius='8px'; wrap.appendChild(board); g2048Root.appendChild(wrap);
-    function newGame(){ g2048 = {grid:[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]], score:0}; addTile(); addTile(); render(); }
-    function addTile(){ const empties=[]; for(let r=0;r<4;r++) for(let c=0;c<4;c++) if(g2048.grid[r][c]===0) empties.push([r,c]); if(empties.length===0) return; const pick = empties[Math.floor(Math.random()*empties.length)]; g2048.grid[pick[0]][pick[1]] = Math.random()>0.85?4:2; }
-    function render(){ board.innerHTML=''; for(let r=0;r<4;r++) for(let c=0;c<4;c++){ const v = g2048.grid[r][c]; const cell = document.createElement('div'); cell.style.height='80px'; cell.style.borderRadius='8px'; cell.style.display='flex'; cell.style.alignItems='center'; cell.style.justifyContent='center'; cell.style.fontSize='28px'; cell.style.background = v? 'linear-gradient(90deg,#ffd166,#ff9f1c)' : 'rgba(255,255,255,0.02)'; cell.textContent = v? v:''; board.appendChild(cell); } g2048Score.textContent = g2048.score; }
-    function move(dir){ let moved=false; const rotate = (m)=> { // rotate grid right m times
-        for(let t=0;t<m;t++){ const ng = Array.from({length:4},()=>Array(4).fill(0)); for(let r=0;r<4;r++) for(let c=0;c<4;c++) ng[c][3-r]=g2048.grid[r][c]; g2048.grid = ng; }
-      };
-      const compact = ()=>{
-        for(let r=0;r<4;r++){ const row = g2048.grid[r].filter(v=>v); for(let i=0;i<4;i++) row[i]=row[i]||0; g2048.grid[r]=row; }
-      };
-      // map dir to rotations
-      const map = { 'left':0,'up':1,'right':2,'down':3 };
-      rotate(map[dir]); for(let r=0;r<4;r++){ for(let c=0;c<3;c++){ if(g2048.grid[r][c]===0) continue; for(let k=c+1;k<4;k++){ if(g2048.grid[r][k]===0) continue; if(g2048.grid[r][c]===g2048.grid[r][k]){ g2048.grid[r][c]*=2; g2048.score += g2048.grid[r][c]; g2048.grid[r][k]=0; moved=true; } break; } } }
-      compact(); rotate((4-map[dir])%4); if(moved) addTile(); render(); }
-    document.addEventListener('keydown',(e)=>{ if(current!=='2048') return; if(e.key.includes('Arrow')){ e.preventDefault(); const d = e.key.replace('Arrow','').toLowerCase(); move(d); } });
-    document.getElementById('g2048-restart').addEventListener('click', newGame);
-    newGame();
+    if(removed){ setTimeout(()=>{ resolveMatches(); render(); },200); }
+    return removed;
   }
-  g2048Create();
-  function g2048Reset(){ g2048Create(); }
+  init();
+}
 
-  /* ======================= MINESWEEPER (simple) ======================= */
-  const minesGrid = document.getElementById('mines-grid'); const minesCount = document.getElementById('mines-count');
-  let minesState=null;
-  function minesReset(){ const rows=9, cols=9, mines=10; minesCount.textContent = mines; minesState = {rows,cols,mines,grid:[],flags:0}; // generate
-    const arr = Array(rows).fill(0).map(()=>Array(cols).fill(0)); let placed=0; while(placed<mines){ const r=Math.floor(Math.random()*rows), c=Math.floor(Math.random()*cols); if(arr[r][c]===-1) continue; arr[r][c]=-1; placed++; }
-    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){ if(arr[r][c]===-1) continue; let cnt=0; for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=r+dr, nc=c+dc; if(nr>=0 && nr<rows && nc>=0 && nc<cols && arr[nr][nc]===-1) cnt++; } arr[r][c]=cnt; }
-    minesState.grid = arr; renderMines(); }
-  function renderMines(){ minesGrid.innerHTML=''; minesGrid.style.display='grid'; minesGrid.style.gridTemplateColumns = `repeat(${minesState.cols},36px)`; minesGrid.style.gap='6px'; for(let r=0;r<minesState.rows;r++) for(let c=0;c<minesState.cols;c++){ const btn = document.createElement('button'); btn.style.width='36px'; btn.style.height='36px'; btn.style.borderRadius='6px'; btn.style.background='linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))'; btn.style.border='none'; btn.dataset.r=r; btn.dataset.c=c; btn.addEventListener('click', ()=> revealCell(r,c,btn)); btn.addEventListener('contextmenu', (ev)=>{ ev.preventDefault(); if(btn.textContent==='🚩') { btn.textContent=''; minesState.flags--; } else { btn.textContent='🚩'; minesState.flags++; } minesCount.textContent = minesState.mines - minesState.flags; }); minesGrid.appendChild(btn); } }
-  function revealCell(r,c,btn){ const val = minesState.grid[r][c]; if(val===-1){ btn.textContent='💥'; alert('Boom! You hit a mine.'); minesReset(); return; } btn.textContent = val? val : ''; btn.disabled=true; if(val===0){ for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){ const nr=r+dr, nc=c+dc; if(nr>=0 && nr<minesState.rows && nc>=0 && nc<minesState.cols){ const idx = nr*minesState.cols + nc; const btn2 = minesGrid.children[idx]; if(btn2 && !btn2.disabled) revealCell(nr,nc,btn2); } } } }
-  document.getElementById('mines-reset').addEventListener('click', minesReset); minesReset();
+/* 10) Bubble Shooter (simple) */
+function loadBubble(){ clearContainer(); currentLabel.textContent='Bubble Shooter (mini)'; const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height = 420; canvas.className='canvas'; container.appendChild(canvas); const ctx = canvas.getContext('2d'); const cols=8, rows=9, r=16; let grid=[]; function initGrid(){ grid=[]; for(let y=0;y<rows;y++){ const row=[]; for(let x=0;x<cols;x++){ row.push(['#ff6b6b','#ffd166','#7ef','#8b5cf6'][Math.floor(Math.random()*4)]); } grid.push(row); } }
+  initGrid(); let angle=Math.PI/2; let shooterColor='#ff6b6b'; function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); // draw bubbles
+    for(let y=0;y<rows;y++) for(let x=0;x<cols;x++){ const cx = 18 + x*(r*2+4); const cy = 18 + y*(r*2+4); ctx.beginPath(); ctx.fillStyle = grid[y][x]; ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill(); } // shooter
+    const sx = canvas.width/2; const sy = canvas.height - 30; ctx.beginPath(); ctx.strokeStyle='#fff'; ctx.moveTo(sx,sy); ctx.lineTo(sx + Math.cos(angle)*60, sy - Math.sin(angle)*60); ctx.stroke(); ctx.beginPath(); ctx.fillStyle = shooterColor; ctx.arc(sx,sy,12,0,Math.PI*2); ctx.fill(); }
+  draw(); canvas.addEventListener('touchmove', e=>{ const t=e.touches[0]; const rect=canvas.getBoundingClientRect(); angle = Math.atan2(rect.top + canvas.height - t.clientY, t.clientX - (rect.left + canvas.width/2)); draw(); }); canvas.addEventListener('touchend', e=>{ // simple: clear top row as "hit"
+    grid.shift(); grid.push(Array(cols).fill(['#ff6b6b','#ffd166','#7ef','#8b5cf6'][Math.floor(Math.random()*4)])); draw(); });
+}
 
-  /* ======================= BREAKOUT (basic) ======================= */
-  const breakCanvas = document.getElementById('breakout-canvas'); const bctx = breakCanvas.getContext('2d'); let breakInt=null; let breakState=null;
-  function breakoutReset(){ breakState = {paddleX: (breakCanvas.width-80)/2, ball:{x:breakCanvas.width/2,y:breakCanvas.height-60,vx:4,vy:-4}, bricks:[], rows:5, cols:8, score:0, running:false}; const bw= (breakCanvas.width-40)/breakState.cols; for(let r=0;r<breakState.rows;r++){ for(let c=0;c<breakState.cols;c++){ breakState.bricks.push({x:20 + c*bw + 6, y:30 + r*22, w: bw-6, h:18, alive:true}); } } drawBreakout(); }
-  function drawBreakout(){ bctx.clearRect(0,0,breakCanvas.width,breakCanvas.height); bctx.fillStyle='#022'; bctx.fillRect(0,0,breakCanvas.width,breakCanvas.height); bctx.fillStyle='#fff'; bctx.fillRect(breakState.paddleX, breakCanvas.height-20, 80, 12); bctx.beginPath(); bctx.arc(breakState.ball.x, breakState.ball.y,8,0,Math.PI*2); bctx.fill(); breakState.bricks.forEach(br=>{ if(br.alive){ bctx.fillStyle = '#ff6'; bctx.fillRect(br.x, br.y, br.w, br.h); } }); document.getElementById('break-score').textContent = breakState.score; }
-  function stepBreakout(){ if(!breakState.running) return; breakState.ball.x += breakState.ball.vx; breakState.ball.y += breakState.ball.vy; if(breakState.ball.x < 0 || breakState.ball.x > breakCanvas.width) breakState.ball.vx *= -1; if(breakState.ball.y < 0) breakState.ball.vy *= -1; if(breakState.ball.y > breakCanvas.height){ breakState.running=false; alert('Ball lost!'); } // paddle
-    if(breakState.ball.y + 8 > breakCanvas.height-20 && breakState.ball.x > breakState.paddleX && breakState.ball.x < breakState.paddleX + 80){ breakState.ball.vy *= -1; }
-    // bricks
-    breakState.bricks.forEach(br=>{ if(br.alive && breakState.ball.x > br.x && breakState.ball.x < br.x + br.w && breakState.ball.y > br.y && breakState.ball.y < br.y + br.h){ br.alive=false; breakState.ball.vy *= -1; breakState.score += 10; } }); drawBreakout(); }
-  document.getElementById('break-start').addEventListener('click', ()=>{ breakoutReset(); breakState.running=true; if(!breakInt) breakInt=setInterval(stepBreakout,16); }); breakoutReset();
-  window.addEventListener('mousemove', (e)=>{ const rect = breakCanvas.getBoundingClientRect(); if(current==='breakout') breakState.paddleX = Math.max(0, Math.min(breakCanvas.width-80, e.clientX - rect.left - 40)); });
+/* 11) Target Shooter (tap targets) */
+function loadShooter(){ clearContainer(); currentLabel.textContent='Target Shooter'; const canvas = document.createElement('canvas'); canvas.width=Math.min(window.innerWidth-40,360); canvas.height=420; canvas.className='canvas'; container.appendChild(canvas); const ctx=canvas.getContext('2d'); let targets=[]; let score=0; function spawn(){ targets.push({x: Math.random()*(canvas.width-60)+30, y: Math.random()*(canvas.height-200)+50, r:20, vx:(Math.random()*2-1), vy:(Math.random()*2-1)}); }
+  for(let i=0;i<5;i++) spawn(); function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#022'; ctx.fillRect(0,0,canvas.width,canvas.height); targets.forEach(t=>{ ctx.beginPath(); ctx.fillStyle='#ff6b6b'; ctx.arc(t.x,t.y,t.r,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(t.x,t.y,6,0,Math.PI*2); ctx.fill(); }); }
+  function step(){ targets.forEach(t=>{ t.x+=t.vx; t.y+=t.vy; if(t.x<20||t.x>canvas.width-20) t.vx*=-1; if(t.y<20||t.y>canvas.height-20) t.vy*=-1; }); draw(); }
+  canvas.addEventListener('touchstart', e=>{ const t = e.changedTouches[0]; const rect=canvas.getBoundingClientRect(); const x=t.clientX-rect.left, y=t.clientY-rect.top; for(let i=targets.length-1;i>=0;i--){ const d = Math.hypot(targets[i].x-x, targets[i].y-y); if(d<targets[i].r){ score++; targets.splice(i,1); spawn(); } } }); setInterval(step,40); const sc = document.createElement('div'); sc.className='small'; sc.style.marginTop='8px'; sc.textContent='Score: 0'; container.appendChild(sc); setInterval(()=> sc.textContent='Score: '+score,200);
+}
 
-  // Global keyboard hookups
-  window.addEventListener('keydown', (e)=>{ if(e.code==='Space'){ e.preventDefault(); if(current==='flappy') flap(); if(current==='snake' && !snakeInterval) startSnake(); if(current==='pong' && !pongState.running) pongStart(); if(current==='breakout' && !breakState.running) { breakState.running=true; if(!breakInt) breakInt=setInterval(stepBreakout,16); } } if(e.key.includes('Arrow')){ /* some games listen to arrows already */ } });
+/* 12) Penalty Shootout (simple) */
+function loadFootball(){ clearContainer(); currentLabel.textContent='Penalty Shootout'; const wrap = document.createElement('div'); const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height=220; canvas.className='canvas'; wrap.appendChild(canvas); const info = document.createElement('div'); info.className='small'; info.style.marginTop='8px'; info.textContent='Tap to aim and shoot'; wrap.appendChild(info); container.appendChild(wrap);
+  const ctx = canvas.getContext('2d'); let angle=0.5, power=10; function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#057'; ctx.fillRect(0,0,canvas.width,canvas.height); // goal
+    ctx.fillStyle='#fff'; ctx.fillRect(canvas.width/2-80,20,160,6); // keeper
+    ctx.fillStyle='#ff6b6b'; ctx.beginPath(); ctx.arc(canvas.width/2,canvas.height-30,12,0,Math.PI*2); ctx.fill(); }
+  draw(); canvas.addEventListener('touchstart', e=>{ const t=e.changedTouches[0]; const rect=canvas.getBoundingClientRect(); angle = Math.atan2(rect.top + canvas.height - t.clientY, t.clientX - (rect.left + canvas.width/2)); // simple success calc
+    const success = Math.random() > 0.35; alert(success? 'Goal!':'Saved by keeper!'); });
+}
 
-  // initial draws
-  drawSnake(); drawFlappy(); drawPong(); g2048Create(); breakoutReset();
-  </script>
+/* 13) Carrom (simple flick) */
+function loadCarrom(){ clearContainer(); currentLabel.textContent='Carrom (mini)'; const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height=360; canvas.className='canvas'; container.appendChild(canvas); const ctx = canvas.getContext('2d'); let striker = {x:canvas.width/2,y:canvas.height-60, vx:0, vy:0}; function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#4b2e1e'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(striker.x,striker.y,12,0,Math.PI*2); ctx.fill(); }
+  draw(); let start=null; canvas.addEventListener('touchstart', e=> start = e.changedTouches[0]); canvas.addEventListener('touchend', e=>{ const t = e.changedTouches[0]; const dx = t.clientX - start.clientX, dy = t.clientY - start.clientY; striker.vx = dx/12; striker.vy = dy/12; const iv = setInterval(()=>{ striker.x += striker.vx; striker.y += striker.vy; striker.vx *= 0.98; striker.vy *= 0.98; if(Math.abs(striker.vx)<0.1 && Math.abs(striker.vy)<0.1) clearInterval(iv); draw(); },30); });
+}
+
+/* 14) Ludo (very simplified — move tokens on linear track) */
+function loadLudo(){ clearContainer(); currentLabel.textContent='Ludo (mini)'; const wrap = document.createElement('div'); const board = document.createElement('div'); board.style.display='flex'; board.style.gap='6px'; board.style.flexWrap='wrap'; for(let i=0;i<20;i++){ const s=document.createElement('div'); s.style.width='40px'; s.style.height='40px'; s.style.borderRadius='6px'; s.style.background='rgba(255,255,255,0.02)'; s.style.display='flex'; s.style.alignItems='center'; s.style.justifyContent='center'; s.textContent = i+1; board.appendChild(s); } wrap.appendChild(board); const roll = document.createElement('button'); roll.className='badge'; roll.textContent='Roll Dice'; roll.style.marginTop='8px'; wrap.appendChild(roll); container.appendChild(wrap); roll.addEventListener('click', ()=> alert('Dice: '+(Math.floor(Math.random()*6)+1)) ); }
+
+/* 15) Car Race (simple touch lanes, avoid obstacles) */
+function loadCarRace(){ clearContainer(); currentLabel.textContent='Car Race (mini)'; const canvas = document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height=420; canvas.className='canvas'; container.appendChild(canvas); const ctx=canvas.getContext('2d'); let lane = 1; let obstacles=[]; function spawn(){ obstacles.push({x: (Math.random()*2+0.5)*canvas.width/3, y:-30}); }
+  setInterval(spawn,1000); function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#052'; ctx.fillRect(0,0,canvas.width,canvas.height); // car
+    const cx = canvas.width/6 + lane*(canvas.width/3); ctx.fillStyle='#ff6b6b'; ctx.fillRect(cx-14,canvas.height-80,28,48); obstacles.forEach(o=>{ o.y+=4; ctx.fillStyle='#fff'; ctx.fillRect(o.x-12,o.y,24,24); }); }
+  canvas.addEventListener('touchstart', e=>{ const t=e.changedTouches[0]; const rect=canvas.getBoundingClientRect(); const x=t.clientX-rect.left; if(x < canvas.width/2) lane = Math.max(0,lane-1); else lane = Math.min(2,lane+1); }); setInterval(draw,30);
+}
+
+/* 16) Bike Race (lane swap) */
+function loadBike(){ clearContainer(); currentLabel.textContent='Bike Race'; const canvas=document.createElement('canvas'); canvas.width = Math.min(window.innerWidth-40,360); canvas.height=420; canvas.className='canvas'; container.appendChild(canvas); const ctx=canvas.getContext('2d'); let lane=1; function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#071'; ctx.fillRect(0,0,canvas.width,canvas.height); const bx = canvas.width/6 + lane*(canvas.width/3); ctx.fillStyle='#ffd166'; ctx.fillRect(bx-10,canvas.height-90,20,40); } canvas.addEventListener('touchstart', e=>{ const t=e.changedTouches[0]; const rect=canvas.getBoundingClientRect(); const x=t.clientX-rect.left; if(x<canvas.width/2) lane=Math.max(0,lane-1); else lane=Math.min(2,lane+1); }); setInterval(draw,30); }
+
+/* 17) Fast Tap (mini-game) */
+function loadFastTap(){ clearContainer(); currentLabel.textContent='Fast Tap'; const btn = document.createElement('button'); btn.className='game-btn g3'; btn.style.fontSize='22px'; btn.style.padding='30px'; btn.textContent='Tap Me!'; container.appendChild(btn); const score = document.createElement('div'); score.className='small'; score.style.marginTop='8px'; score.textContent='Taps: 0'; container.appendChild(score); let taps=0; btn.addEventListener('touchstart', ()=>{ taps++; score.textContent='Taps: '+taps; }); }
+
+/* 18) Match Pairs (another variant) */
+function loadMatchPairs(){ loadMemory(); }
+
+/* Load routing */
+function loadGame(id){ currentLabel.textContent = 'Loading...'; switch(id){ case 'ttt': loadTicTacToe(); break; case 'snake': loadSnake(); break; case 'memory': loadMemory(); break; case 'flappy': loadFlappy(); break; case 'pong': loadPong(); break; case '2048': load2048(); break; case 'mines': loadMines(); break; case 'breakout': loadBreakout(); break; case 'candy': loadCandy(); break; case 'bubble': loadBubble(); break; case 'shooter': loadShooter(); break; case 'football': loadFootball(); break; case 'carrom': loadCarrom(); break; case 'ludo': loadLudo(); break; case 'carRace': loadCarRace(); break; case 'bikeRace': loadBike(); break; case 'carShoot': placeholder.bind(null,'Car Race Shooting')(); break; case 'gunshot': placeholder.bind(null,'Gun Shot (2D)')(); break; case 'football11': placeholder.bind(null,'Football (vs AI)')(); break; case 'pool': placeholder.bind(null,'Pool / Billiards')(); break; case 'ticFast': loadFastTap(); break; case 'matchPairs': loadMatchPairs(); break; case 'endless': placeholder.bind(null,'Endless Runner')(); break; case 'pongAir': placeholder.bind(null,'Air Pong')(); break; default: placeholder('Unknown'); }
+}
+
+// About / Themes modal
+const aboutBtn = document.getElementById('aboutBtn'); const aboutModal = document.getElementById('aboutModal'); aboutBtn.addEventListener('click', ()=> aboutModal.classList.add('show')); document.getElementById('closeAbout').addEventListener('click', ()=> aboutModal.classList.remove('show'));
+// theme buttons
+document.querySelectorAll('[data-theme]').forEach(b=> b.addEventListener('click', ()=> setTheme(b.dataset.theme)));
+function setTheme(name){ document.body.style.setProperty('--bg', name==='neon'? '#030012' : name==='sunny'? '#fff7ed' : name==='retro'? '#0b0a03' : '#081226'); if(name==='sunny'){ document.documentElement.style.setProperty('--muted','#333'); document.documentElement.style.setProperty('--card','#fff'); } else { document.documentElement.style.setProperty('--muted','#dceffd'); document.documentElement.style.setProperty('--card','#071428'); } aboutModal.classList.remove('show'); }
+
+// persist small settings to localStorage
+const soundToggle = document.getElementById('soundToggle'); const hapticsToggle = document.getElementById('hapticsToggle'); if(localStorage.getItem('games_sound')) soundToggle.checked = localStorage.getItem('games_sound')==='1'; soundToggle.addEventListener('change', ()=> localStorage.setItem('games_sound', soundToggle.checked? '1':'0'));
+
+// quick start: show first game
+loadGame('ttt');
+</script>
 </body>
 </html>
